@@ -26,13 +26,13 @@ namespace DemoSanBong
             //tài khoản người dùng
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false;
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedAccount = false;// Yêu cầu tài khoản được xác nhận là false
+                options.Password.RequireDigit = false; //Yêu cầu chứa số là false
+                options.Password.RequiredLength = 6;// Yêu cầu độ dài mật khẩu là 6 ký tự
+                options.Password.RequireNonAlphanumeric = false;// Yêu cầu ký tự đặc biệt là false
+                options.Password.RequireUppercase = false;// Yêu cầu chữ hoa là false
+                options.Password.RequireLowercase = false;// Yêu cầu chữ thường là false
+                options.User.RequireUniqueEmail = true;// Yêu cầu email là duy nhất
             }).AddEntityFrameworkStores<AppDbContext>();
             var app = builder.Build();
 

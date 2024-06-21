@@ -25,7 +25,7 @@ namespace DemoSanBong
             if (userManager.Users.All(u => u.UserName != "admin"))
             {
                 var admin = new AppUser { UserName = "admin", Email = "admin@example.com", PhoneNumber = "0123456789", FullName = "Quản trị viên" };
-                var result = await userManager.CreateAsync(admin, "admin");
+                var result = await userManager.CreateAsync(admin, "admin123");
 
                 if (result.Succeeded)
                 {
