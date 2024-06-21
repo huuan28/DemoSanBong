@@ -1,6 +1,7 @@
 ﻿using DemoSanBong.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DemoSanBong
 {
@@ -121,6 +122,127 @@ namespace DemoSanBong
                     }
                 }
                 await context.SaveChangesAsync();
+            }
+            await SeedService(context);
+        }
+        public static async Task SeedService(AppDbContext context)
+        {
+            if (!context.Services.Any())
+            {
+                context.Services.AddRange
+                    (
+                    new Service
+                    {
+                        Name = "Sting",
+                        Description = "Description for service 1",
+                        Type = "DoAn",
+                        Price = 100.0,
+                        Unit = 1.0,
+                        Quantity = 10,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image1.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 2",
+                        Description = "Description for service 2",
+                        Type = "Type B",
+                        Price = 200.0,
+                        Unit = 2.0,
+                        Quantity = 20,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image2.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 3",
+                        Description = "Description for service 3",
+                        Type = "Type C",
+                        Price = 300.0,
+                        Unit = 3.0,
+                        Quantity = 30,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image3.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 4",
+                        Description = "Description for service 4",
+                        Type = "Type D",
+                        Price = 400.0,
+                        Unit = 4.0,
+                        Quantity = 40,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image4.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 5",
+                        Description = "Description for service 5",
+                        Type = "Type E",
+                        Price = 500.0,
+                        Unit = 5.0,
+                        Quantity = 50,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image5.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 6",
+                        Description = "Description for service 6",
+                        Type = "Type F",
+                        Price = 600.0,
+                        Unit = 6.0,
+                        Quantity = 60,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image6.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 7",
+                        Description = "Description for service 7",
+                        Type = "Type G",
+                        Price = 700.0,
+                        Unit = 7.0,
+                        Quantity = 70,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image7.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 8",
+                        Description = "Description for service 8",
+                        Type = "Type H",
+                        Price = 800.0,
+                        Unit = 8.0,
+                        Quantity = 80,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image8.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 9",
+                        Description = "Description for service 9",
+                        Type = "Type I",
+                        Price = 900.0,
+                        Unit = 9.0,
+                        Quantity = 90,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image9.jpg"
+                    },
+                    new Service
+                    {
+                        Name = "Service 10",
+                        Description = "Description for service 10",
+                        Type = "Type J",
+                        Price = 1000.0,
+                        Unit = 10.0,
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        ImagePath = "path/to/image10.jpg"
+                    }
+            );
+               await context.SaveChangesAsync();
             }
         }
     }
