@@ -40,6 +40,7 @@ namespace DemoSanBong.Models
         public static readonly int RentByHour = 0;
         public static readonly int RentByMonth = 1;
 
+        //status
         public static readonly int Deposited = 1;
         public static readonly int Changed = 2;
         public static readonly int Cancelled = 3;
