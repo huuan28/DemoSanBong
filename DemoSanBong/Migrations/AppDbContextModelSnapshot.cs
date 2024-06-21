@@ -63,7 +63,7 @@ namespace DemoSanBong.Migrations
                     b.Property<bool>("IsRegisted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("Level")
+                    b.Property<int?>("Level")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
@@ -442,9 +442,6 @@ namespace DemoSanBong.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -452,8 +449,9 @@ namespace DemoSanBong.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Unit")
-                        .HasColumnType("float");
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -474,43 +472,6 @@ namespace DemoSanBong.Migrations
                     b.HasKey("ServiceId", "EffectiveDate");
 
                     b.ToTable("ServiceRates");
-                });
-
-            modelBuilder.Entity("DemoSanBong.ViewModels.FieldViewModel", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"), 1L, 1);
-
-                    b.Property<string>("DefaultImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PricePerMonth")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FieldViewModel");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -650,9 +611,7 @@ namespace DemoSanBong.Migrations
                 {
                     b.HasOne("DemoSanBong.Models.CustomerLevel", "CustomerLevel")
                         .WithMany()
-                        .HasForeignKey("Level")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Level");
 
                     b.Navigation("CustomerLevel");
                 });

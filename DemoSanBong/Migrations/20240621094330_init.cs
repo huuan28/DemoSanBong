@@ -15,7 +15,7 @@ namespace DemoSanBong.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Benefit = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -29,8 +29,8 @@ namespace DemoSanBong.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(10)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -45,8 +45,8 @@ namespace DemoSanBong.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(20)", maxLength: 256, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -75,11 +75,10 @@ namespace DemoSanBong.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(30)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Unit = table.Column<double>(type: "float", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -94,25 +93,25 @@ namespace DemoSanBong.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(30)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: true),
-                    Avatar = table.Column<string>(type: "varchar(max)", nullable: true),
-                    SearchKey = table.Column<string>(type: "varchar(max)", nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SearchKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Gender = table.Column<bool>(type: "bit", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsRegisted = table.Column<bool>(type: "bit", nullable: false),
                     ResgiterDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(20)", maxLength: 256, nullable: false),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(20)", maxLength: 256, nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "varchar(12)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -126,8 +125,7 @@ namespace DemoSanBong.Migrations
                         name: "FK_Users_CustomerLevels_Level",
                         column: x => x.Level,
                         principalTable: "CustomerLevels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -265,7 +263,7 @@ namespace DemoSanBong.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CashierId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    GuestPhoneNumber = table.Column<string>(type: "char(10)", nullable: true)
+                    GuestPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -568,9 +566,6 @@ namespace DemoSanBong.Migrations
 
             migrationBuilder.DropTable(
                 name: "FieldRates");
-
-            migrationBuilder.DropTable(
-                name: "FieldViewModel");
 
             migrationBuilder.DropTable(
                 name: "InvoiceServices");

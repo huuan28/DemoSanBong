@@ -16,7 +16,23 @@ namespace DemoSanBong.Controllers
         public IActionResult Index()
         {
             var list = _context.Services.ToList();
-            return View(list);
+            var models = new List<EditServiceViewModel>();
+            foreach (var sv in list)
+            {
+                var model = new EditServiceViewModel
+                {
+                    Id = sv.Id,
+                    Name = sv.Name,
+                    Description = sv.Description,
+                    Type = sv.Type,
+                    Price = sv.getCurrentPrice(_context),
+                    Unit = sv.Unit,
+                    Quantity = sv.Quantity,
+                    CreateDate = DateTime.Now,
+                };
+                models.Add(model);
+            }
+            return View(models);
         }
         public IActionResult Create()
         {
@@ -34,13 +50,22 @@ namespace DemoSanBong.Controllers
                     {
                         Name = service.Name,
                         Description = service.Description,
-                        Type = service.Type,
-                        Price = service.Price,
+                        Type = service.Type,                      
                         Unit = service.Unit,
                         Quantity = service.Quantity,
                     };
+
                     _context.Services.Add(sv);
                     await _context.SaveChangesAsync();
+                    var serviceRate = new ServiceRate
+                    {
+                        ServiceId = sv.Id,
+                        EffectiveDate = DateTime.Now,
+                        Price = service.Price
+                    };
+                    _context.ServiceRates.Add(serviceRate);
+                    await _context.SaveChangesAsync();
+
                     return RedirectToAction("Index");
                 }             
             }
@@ -59,9 +84,10 @@ namespace DemoSanBong.Controllers
                 Name = sv.Name,
                 Description = sv.Description,
                 Type = sv.Type,
-                Price = sv.Price,
+                Price = sv.getCurrentPrice(_context),
                 Unit = sv.Unit,
                 Quantity = sv.Quantity,
+                CreateDate = DateTime.Now,
             };
             return View(model);
         }
@@ -78,11 +104,18 @@ namespace DemoSanBong.Controllers
                 sv.Name = model.Name;
                 sv.Description = model.Description;
                 sv.Type = model.Type;
-                sv.Price = model.Price;
                 sv.Unit = model.Unit;
                 sv.Quantity = model.Quantity;
                 _context.Services.Update(sv);
                 await _context.SaveChangesAsync();
+
+                var currPrice = _context.ServiceRates.Where(i=>i.ServiceId==model.Id).OrderByDescending(i=>i.EffectiveDate).FirstOrDefault();
+                if (currPrice.Price != model.Price)
+                {
+                    currPrice.Price = model.Price;
+                    _context.ServiceRates.Update(currPrice);
+                    await _context.SaveChangesAsync();
+                }
                 //chuyển hướng
                 return RedirectToAction("Index");
             }
@@ -106,16 +139,16 @@ namespace DemoSanBong.Controllers
             {
                 return NotFound();
             }
-            detail = new Service
+            var details = new EditServiceViewModel
             {
                 Name = detail.Name,
                 Description = detail.Description,
                 Type = detail.Type,
-                Price = detail.Price,
+                Price = detail.getCurrentPrice(_context),
                 Unit = detail.Unit,
                 Quantity = detail.Quantity,
             };
-            return View(detail);
+            return View(details);
         }
     }
 }

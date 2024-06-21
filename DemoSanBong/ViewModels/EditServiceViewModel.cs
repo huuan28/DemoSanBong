@@ -16,7 +16,7 @@ namespace DemoSanBong.ViewModels
         [Required]
         public double Price { get; set; }
         [Required]
-        public double Unit { get; set; }
+        public string Unit { get; set; }
         [Required]
         public int Quantity { get; set; }
 
