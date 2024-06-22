@@ -4,11 +4,9 @@ namespace DemoSanBong.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required]
         [Display(Name = "Họ và tên")]
         public string FullName { get; set; }
 
-        [Required]
         [Phone]
         [Display(Name = "Số điện thoại")]
         public string PhoneNumber { get; set; }
@@ -16,7 +14,6 @@ namespace DemoSanBong.ViewModels
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

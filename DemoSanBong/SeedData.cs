@@ -74,18 +74,18 @@ namespace DemoSanBong
             if (!context.Fields.Any())
             {
                 context.Fields.AddRange(
-                   new Field { Name = "Sân 1", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/1/" },
-                   new Field { Name = "Sân 2", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/2/" },
-                   new Field { Name = "Sân 3", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/3/" },
-                   new Field { Name = "Sân 4", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/4/" },
-                   new Field { Name = "Sân 5", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/5/" },
-                   new Field { Name = "Sân 6", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/6/" },
-                   new Field { Name = "Sân 7", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/7/" },
-                   new Field { Name = "Sân 8", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/8/" },
-                   new Field { Name = "Sân 9", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/9/" },
-                   new Field { Name = "Sân 10", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/10/" },
-                   new Field { Name = "Sân 11", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/11/" },
-                   new Field { Name = "Sân 12", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/12/" }
+                   new Field { Name = "Sân 1", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 2", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 3", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 4", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 5", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 6", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 7", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 8", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 9", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 10", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 11", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "Sân 12", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" }
                     );
                 await context.SaveChangesAsync();
 

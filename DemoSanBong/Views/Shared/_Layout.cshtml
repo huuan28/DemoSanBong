@@ -1,63 +1,14 @@
-﻿@* <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DemoSanBong</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DemoSanBong.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DemoSanBong</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - DemoSanBong - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html> *@
-
+﻿@using Microsoft.AspNetCore.Identity
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>SportsMagazine Home Page</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- Css Files -->
     <link href="~/css/bootstrap.css" rel="stylesheet">
@@ -100,9 +51,8 @@
                         <aside class="col-md-8">
                             <ul class="sportsmagazine-user-section">
                                 <li><i class="fa fa-globe"></i> <a href="404.html">Support</a></li>
-                                <li><i class="fa fa-dollar"></i> <a href="404.html">Currency : USD</a></li>
+                                <li><i class="fa fa-dollar"></i> <a href="#">Level : VIP10</a></li>
                                 <li>
-                                    <i class="fa fa-shopping-cart"></i> <a href="#" class="sportsmagazine-open-cart">Cart (0)</a>
                                     <div class="sportsmagazine-cart-box">
                                         <h2>You have 2 items in the cart</h2>
                                         <ul>
@@ -131,8 +81,20 @@
                                         <div class="sportsmagazine-cart-link"><a href="checkout.html" class="sportsmagazine-cartbox-btn sportsmagazine-bgcolorhover"><i class="flaticon-tool"></i> Go to Checkout</a></div>
                                     </div>
                                 </li>
-                                <li><i class="fa fa-user"></i> <a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
-                                <li><i class="fa fa-sign-in"></i> <a href="#" data-toggle="modal" data-target="#signupModal">Sign Up</a></li>
+                                @if (!User.Identity.IsAuthenticated)
+                                {
+                                    <li><i class="fa fa-user"></i> <a href="#" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                                    <li><i class="fa fa-sign-in"></i> <a href="#" data-toggle="modal" data-target="#signupModal">Sign Up</a></li>
+                                }
+                                else
+                                {
+                                    if(User.IsInRole("Admin"))
+                                    {
+                                        <li><i class="fa fa-setting"></i> <a href="Field">DashBoard</a></li>
+                                    }
+                                    <li><i class="fa fa-user"></i> <a href="#">@await Component.InvokeAsync("UserFullName")</a></li>
+                                    <li><i class="fa fa-sign-out"></i> <a href="Account/Logout">Sign Out</a></li>
+                                }
                             </ul>
                         </aside>
                     </div>
@@ -503,9 +465,11 @@
             <div class="sportsmagazine-login-box">
                 <a href="#" data-dismiss="modal" class="sportsmagazine-login-close sportsmagazine-color"><i class="icon-uniF106"></i></a>
                 <h4>Login To Your Account</h4>
-                <form>
-                    <input type="text" value="Enter username*" onblur="if(this.value == '') { this.value ='Enter username*'; }" onfocus="if(this.value =='Enter username*') { this.value = ''; }">
-                    <input type="password" value="Password*" onblur="if(this.value == '') { this.value ='Password*'; }" onfocus="if(this.value =='Password*') { this.value = ''; }">
+                <form asp-action="Login" asp-controller="Account">
+                    <input name="UserName" type="text" value="Enter username*" onblur="if(this.value == '') { this.value ='Enter username*'; }" onfocus="if(this.value =='Enter username*') { this.value = ''; }">
+                    <input name="Password" type="password" value="Password*" onblur="if(this.value == '') { this.value ='Password*'; }" onfocus="if(this.value =='Password*') { this.value = ''; }">
+                    <input type="checkbox" name="RememberMe" data-val="true" value="true" />
+                    <span>RememberMe &nbsp;</span>
                     <a href="#" class="sportsmagazine-colorhover">Forget Password?</a>
                     <div class="clearfix"></div>
                     <label><input type="submit" value="Sign In" class="sportsmagazine-bordercolor sportsmagazine-color"></label>
@@ -527,11 +491,13 @@
         <div class="modal-dialog" role="document">
             <div class="sportsmagazine-login-box">
                 <a href="#" data-dismiss="modal" class="sportsmagazine-login-close sportsmagazine-color"><i class="icon-uniF106"></i></a>
-                <h4>Sign Up Now</h4>
-                <form>
-                    <input type="text" value="Enter username*" onblur="if(this.value == '') { this.value ='Enter username*'; }" onfocus="if(this.value =='Enter username*') { this.value = ''; }">
-                    <input type="text" value="Type your password*" onblur="if(this.value == '') { this.value ='Type your password*'; }" onfocus="if(this.value =='Type your password*') { this.value = ''; }">
-                    <input type="text" value="Confirm your password*" onblur="if(this.value == '') { this.value ='Confirm your password*'; }" onfocus="if(this.value =='Confirm your password*') { this.value = ''; }">
+                <h4>Đăng ký ngay</h4>
+                <form asp-action="Register" asp-controller="Account">
+                    <input type="text" name="PhoneNumber" value="Nhập số điện thoại*" onblur="if(this.value == '') { this.value ='Nhập số điện thoại*'; }" onfocus="if(this.value =='Nhập số điện thoại*') { this.value = ''; }">
+                    <input type="text" name="FullName" value="Họ và tên*" onblur="if(this.value == '') { this.value ='Họ và tên*'; }" onfocus="if(this.value =='Họ và tên*') { this.value = ''; }">
+                    <input type="text" name="Email" value="Địa chỉ Email*" onblur="if(this.value == '') { this.value ='Địa chỉ Email*'; }" onfocus="if(this.value =='Địa chỉ Email*') { this.value = ''; }">
+                    <input type="password" name="Password" value="Nhập mật khẩu*" onblur="if(this.value == '') { this.value ='Nhập mật khẩu*'; }" onfocus="if(this.value =='Nhập mật khẩu*') { this.value = ''; }">
+                    <input type="password" name="ConfirmPassword" value="Xác nhận mật khẩu*" onblur="if(this.value == '') { this.value ='Xác nhận mật khẩu*'; }" onfocus="if(this.value =='Xác nhận mật khẩu*') { this.value = ''; }">
                     <a href="#" class="sportsmagazine-colorhover">Forget Password?</a>
                     <div class="clearfix"></div>
                     <label><input type="submit" value="Sign Up" class="sportsmagazine-bordercolor sportsmagazine-color"></label>
@@ -559,7 +525,7 @@
     <script type="text/javascript" src="script/progressbar.js"></script>
     <script type="text/javascript" src="script/counter.js"></script>
     <script type="text/javascript" src="script/functions.js"></script>
-
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 
 </html>

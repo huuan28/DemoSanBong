@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DemoHotelBooking.ViewModels
+namespace DemoSanBong.ViewModels
 {
     public class LoginViewModel
     {

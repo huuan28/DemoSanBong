@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="ViewComponents\" />
+    <Folder Include="wwwroot\Images\FieldImages\" />
+    <Folder Include="wwwroot\Images\ServiceImages\" />
   </ItemGroup>
 
   <ItemGroup>

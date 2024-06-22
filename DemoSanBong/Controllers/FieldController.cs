@@ -72,7 +72,7 @@ namespace DemoSanBong.Controllers
                 await _context.SaveChangesAsync();
 
                 //lưu path ảnh
-                field.ImagePath = "Images/" + field.Id.ToString() + "/";
+                field.ImagePath = "Images/FieldImages/";
                 _context.Fields.Update(field);
                 await _context.SaveChangesAsync();
                 //thêm giá sân
@@ -93,14 +93,14 @@ namespace DemoSanBong.Controllers
                     });
                 await _context.SaveChangesAsync();
 
-                //Tạo folder sân
-                string fieldFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", field.Id.ToString());
+                //Tạo folder 
+                string fieldFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "FieldImages");
                 if (!Directory.Exists(fieldFolder))
                 {
                     Directory.CreateDirectory(fieldFolder);
                 }
                 //Lấy tên file
-                string fileName = image.FileName;
+                string fileName = Guid.NewGuid().ToString()+"-"+ image.FileName;
 
                 //lấy đường dẫn folder ảnh
                 string filePath = Path.Combine(fieldFolder, fileName);
@@ -171,6 +171,5 @@ namespace DemoSanBong.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Detail", new { id = model.Id });
         }
-
     }
 }
