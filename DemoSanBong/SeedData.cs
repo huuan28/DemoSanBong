@@ -9,6 +9,7 @@ namespace DemoSanBong
     {
         public static async Task Initialize(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IApplicationBuilder app)
         {
+            #region Seeding User
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -37,9 +38,9 @@ namespace DemoSanBong
             // Danh sách các khách hàng cần thêm
             var customers = new List<AppUser>
             {
-                 new AppUser { UserName = "an",FullName = "An", Email = "nghuuan2803@gmail.com" },
-                 new AppUser { UserName = "hao",FullName = "Hào", Email = "customer2@example.com" },
-                 new AppUser { UserName = "hien",FullName = "Hiền", Email = "customer3@example.com" },
+                 new AppUser { UserName = "huuan",FullName = "An", Email = "nghuuan2803@gmail.com", PhoneNumber = "0909090909" },
+                 new AppUser { UserName = "anhhao",FullName = "Hào", Email = "customer2@example.com", PhoneNumber = "0303030303" },
+                 new AppUser { UserName = "hien",FullName = "Hiền", Email = "customer3@example.com", PhoneNumber = "0123012345" },
              };
             var password = "123123";
 
@@ -63,6 +64,7 @@ namespace DemoSanBong
                     await userManager.AddToRoleAsync(user, "Cashier");
                 }
             }
+            #endregion
 
             AppDbContext context = app.ApplicationServices.
                CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
@@ -70,7 +72,7 @@ namespace DemoSanBong
             {
                 context.Database.Migrate();
             }
-
+            #region Seeding Field
             if (!context.Fields.Any())
             {
                 context.Fields.AddRange(
@@ -123,10 +125,8 @@ namespace DemoSanBong
                 }
                 await context.SaveChangesAsync();
             }
-            await SeedService(context);
-        }
-        public static async Task SeedService(AppDbContext context)
-        {
+            #endregion
+            #region seeding service
             if (!context.Services.Any())
             {
                 context.Services.AddRange
@@ -243,6 +243,69 @@ namespace DemoSanBong
                     }
                     await context.SaveChangesAsync();
                 }
+            }
+            #endregion
+
+            //Set rules
+            if (!context.Rules.Any())
+            {
+                context.Rules.Add(new Rules
+                {
+                    OpenTime = 7,
+                    CloseTime = 22,
+                    DepositPercent = 20
+                });
+                await context.SaveChangesAsync();
+                Console.WriteLine("Set Rules Successed");
+            }
+
+            if (!context.Bookings.Any(i=> i.CreateDate.Date == DateTime.Today))
+            {
+
+                var bookings = new List<Booking>
+            {
+                new Booking
+                {
+                    CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
+                    CheckinDate = DateTime.Today.AddHours(7),
+                    CheckoutDate = DateTime.Today.AddHours(22),
+                    CreateDate = DateTime.Now,
+                    PaymentMethod = 1,
+                    Status = 1,
+                    RentalType = 0,
+                    Deposit = 0
+                },
+                new Booking
+                {
+                    CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
+                    CheckinDate = DateTime.Today.AddHours(9).AddDays(1),
+                    CheckoutDate = DateTime.Today.AddHours(21).AddDays(1),
+                    CreateDate = DateTime.Now.AddDays(1),
+                    PaymentMethod = 1,
+                    Status = 1,
+                    RentalType = 0,
+                    Deposit = 0
+                },
+            };
+                context.Bookings.AddRange(bookings);
+                await context.SaveChangesAsync();
+
+                foreach (var booking in bookings)
+                {
+                    var detail1 = new BookingDetail
+                    {
+                        BookingId = booking.Id,
+                        FieldId = 3
+                    };
+                    var detail2 = new BookingDetail
+                    {
+                        BookingId = booking.Id,
+                        FieldId = 4
+                    };
+                    context.BookingDetails.Add(detail1);
+                    context.BookingDetails.Add(detail2);
+                }
+                await context.SaveChangesAsync();
             }
         }
     }

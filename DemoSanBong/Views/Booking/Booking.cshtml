@@ -1,0 +1,225 @@
+﻿@model DemoSanBong.ViewModels.BookingViewModel;
+
+@{
+    ViewData["Title"] = "Booking";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Booking</h1>
+
+<h4>Booking</h4>
+<hr />
+
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Booking">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FullName" class="control-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <label class="control-label">Loại hình thuê</label>
+                <select name="RentalType">
+                    <option value="0">Thuê giờ</option>
+                    <option value="1">Thuê tháng</option>
+                </select>
+                <span asp-validation-for="RentalType" class="text-danger"></span>
+            </div>
+
+            <div id="selecteDay">
+                <label class="control-label">Chọn ngày</label>
+                @Html.Partial("SelectedDate", Model.SelectDay)
+            </div>
+
+            <div class="form-group">
+                <div id="begintime">
+                    <label class="control-label">Bắt đầu từ</label>
+                    @Html.Partial("SelectBeginTime", Model.SelectBegin)
+                </div>
+            </div>
+            <div class="form-group">
+                <div id="endtime">
+                    <label class="control-label">kết thúc</label>
+                    @Html.Partial("SelectEndTime", Model.SelectEnd)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Deposit" class="control-label"></label>
+                <input disabled="disabled" asp-for="Deposit" class="form-control" />
+                <span asp-validation-for="Deposit" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+    <div id="Fields" class="col-md-8">
+        <h2>Chọn sân</h2>
+        <div id="availableFields">
+            @Html.Partial("AvailableField", Model.AvailableField)
+        </div>
+        <h2>Đã chọn</h2>
+        <div id="selectedFields">
+            @Html.Partial("SelectedField", Model.SelectedFields)
+        </div>
+    </div>
+
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function registerUpdateDay() {
+                $('#SelectedDate').change(function () {
+                    var selectedDate = $(this).val();
+                    $.ajax({
+                        url: '@Url.Action("UpdateBeginEndTimes", "Booking")',
+                        type: 'POST',
+                        data: { selectedDate: selectedDate },
+                        success: function (result) {
+                            console.log("AJAX success:", result);
+                            var selectBegin = $('#CheckinDate');
+                            var selectEnd = $('#CheckoutDate');
+
+                            selectBegin.empty();
+                            selectEnd.empty();
+
+                            $.each(result.selectBegin, function (index, value) {
+                                console.log("Appending to selectBegin:", value);
+                                var optionText = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                selectBegin.append('<option value="' + value + '">' + optionText + '</option>');
+                            });
+
+                            // Add new options to selectEnd
+                            $.each(result.selectEnd, function (index, value) {
+                                console.log("Appending to selectEnd:", value);
+                                var optionText = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                selectEnd.append('<option value="' + value + '">' + optionText + '</option>');
+                            });
+                            registerAddRoomButtons()
+                        }
+                    });
+                });
+            }
+            // function registerUpdateTime() {
+            //     $('#CheckinDate, #CheckoutDate').change(function () {
+            //         var start = $('#CheckinDate').val();
+            //         var end = $('#CheckoutDate').val();
+
+            //         $.ajax({
+            //             url: '@Url.Action("UpdateTime", "Booking")',
+            //             type: 'POST',
+            //             data: { start: start, end: end },
+            //             success: function (result) {
+            //                 // Xử lý kết quả trả về nếu cần thiết
+            //                 $('#availableFields').html(result); // Cập nhật phần tử HTML hiển thị sân bóng
+            //                 registerAddRoomButtons()
+            //             },
+            //             error: function (error) {
+            //                 console.error('Error updating time:', error);
+            //             }
+            //         });
+            //     });
+            function registerUpdateTime() {
+                $('#CheckinDate, #CheckoutDate').change(function () {
+                    var start = $('#CheckinDate').val();
+                    var end = $('#CheckoutDate').val();
+
+                    $.ajax({
+                        url: '@Url.Action("UpdateTime", "Booking")',
+                        type: 'POST',
+                        data: { start: start, end: end },
+                        success: function (result) {
+                            // Thay thế nội dung của các thẻ div với dữ liệu nhận được từ server
+                            $('#availableFields').html(result.availableFieldsHtml);
+                            $('#selectedFields').html(result.selectedFieldsHtml);
+
+                            // Đăng ký lại các sự kiện cần thiết sau khi nội dung được thay thế
+                            registerUpdateTime();
+                            registerAddRoomButtons();
+                        },
+                        error: function (error) {
+                            console.error('Error updating time:', error);
+                        }
+                    });
+                });
+            }
+            function registerAddRoomButtons() {
+                $('.addRoomButton').click(function () {
+                    var roomId = $(this).data('room-id');
+                    $.ajax({
+                        url: '@Url.Action("AddField", "Booking")',
+                        type: 'POST',
+                        data: { id: roomId },
+                        success: function (result) {
+                            $('#selectedFields').html(result);
+                            registerRemoveRoomButtons()
+                        }
+                    });
+                });
+            }
+            function registerRemoveRoomButtons() {
+                $('.removeRoomButton').click(function () {
+                    var roomId = $(this).data('room-id');
+                    $.ajax({
+                        url: '@Url.Action("RemoveField", "Booking")',
+                        type: 'POST',
+                        data: { id: roomId },
+                        success: function (result) {
+                            $('#selectedFields').html(result);
+                            registerRemoveRoomButtons()
+                        }
+                    });
+                });
+            }
+            registerAddRoomButtons();
+            registerRemoveRoomButtons();
+            registerUpdateDay();
+            registerUpdateTime()
+            // $('#CheckinDate').change(function () {
+            //     var start = $(this).val();
+            //     var end = $('#CheckoutDate').val();
+
+            //     $.ajax({
+            //         url: '@Url.Action("UpdateTime", "Booking")',
+            //         type: 'POST',
+            //         data: { start: start, end: end },
+            //         success: function (result) {
+            //             var selectEnd = $('#CheckoutDate');
+
+            //             // Cập nhật các option của selectEnd
+            //             selectEnd.empty();
+            //             $.each(result.SelectEnd, function (index, value) {
+            //                 selectEnd.append('<option value="' + value + '">' + new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</option>');
+            //             });
+
+            //             // Cập nhật danh sách sân trống
+            //             $('#availableFields').html(result.AvailableFieldHtml); // assuming result contains HTML of available fields
+            //         },
+            //         error: function (error) {
+            //             console.error('Error updating time:', error);
+            //         }
+            //     });
+            // });
+
+
+        });
+    </script>
+}

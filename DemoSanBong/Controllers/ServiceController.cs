@@ -34,6 +34,7 @@ namespace DemoSanBong.Controllers
             }
             return View(models);
         }
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -41,7 +42,7 @@ namespace DemoSanBong.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateServiceViewModel service)
         {
-            if(ModelState.IsValid)
+            if(ModelState.IsValid==true)
             {
                 var sv = _context.Services.FirstOrDefault(i => i.Name == service.Name);
                 if (sv == null)
@@ -71,6 +72,7 @@ namespace DemoSanBong.Controllers
             }
             return View();
         }
+        [HttpGet]
         public IActionResult Update(int id)
         {
             var sv = _context.Services.FirstOrDefault(i => i.Id == id);
@@ -94,7 +96,7 @@ namespace DemoSanBong.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(EditServiceViewModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid==true)
             {
                 var sv = _context.Services.FirstOrDefault(i => i.Id == model.Id);
                 if (sv == null)
@@ -121,6 +123,8 @@ namespace DemoSanBong.Controllers
             }
             return View(model);
         }
+
+        //[Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var sv =_context.Services.Find(id);

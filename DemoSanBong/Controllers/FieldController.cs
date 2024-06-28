@@ -20,9 +20,9 @@ namespace DemoSanBong.Controllers
         //trang list sân
         public IActionResult Index()
         {
-            var field = _context.Fields.ToList();
-            var model = new List<FieldViewModel>();
-            foreach (var f in field)
+            var fields = _context.Fields.ToList();
+            var models = new List<FieldViewModel>();
+            foreach (var f in fields)
             {
                 var item = new FieldViewModel
                 {
@@ -39,9 +39,9 @@ namespace DemoSanBong.Controllers
                 {
                     item.DefaultImage = f.ImagePath + img.FileName;
                 }
-                model.Add(item);
+                models.Add(item);
             }
-            return View(model);
+            return View(models);
         }
 
         public IActionResult Create()

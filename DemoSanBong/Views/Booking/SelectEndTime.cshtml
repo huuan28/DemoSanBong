@@ -1,0 +1,8 @@
+﻿@model List<DateTime>
+
+<select id="CheckoutDate" name="CheckoutDate">
+    @foreach (var hour in Model)
+    {
+        <option value="@hour.ToString("yyyy-MM-dd HH:mm")">@hour.ToString("HH:mm")</option>
+    }
+</select>

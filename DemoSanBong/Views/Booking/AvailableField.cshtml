@@ -1,0 +1,52 @@
+﻿@model IEnumerable<DemoSanBong.ViewModels.FieldViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PricePerMonth)
+            </th>
+            <th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PricePerMonth)
+                </td>
+                <td>
+                    <button class="addRoomButton btn btn-success" data-room-id="@item.Id">Add</button>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-controller="Room" target="_blank" asp-route-id="@item.Id">Chi tiết</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
