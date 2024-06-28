@@ -1,7 +1,16 @@
 ﻿@model List<DateTime>
 
 <select id="SelectedDate" name="SelectedDate">
-    <option value="@Model[0].ToString("yyyy-MM-dd HH:mm")">Hôm nay - @Model[0].ToString("dd/MM/yyyy")</option>
-    <option value="@Model[1].ToString("yyyy-MM-dd HH:mm")">Ngày mai - @Model[1].ToString("dd/MM/yyyy")</option>
-    <option value="@Model[2].ToString("yyyy-MM-dd HH:mm")">Ngày mốt - @Model[2].ToString("dd/MM/yyyy")</option>
+    @if (DateTime.Now.Hour < 21)
+    {
+        <option value="@Model[0].ToString("yyyy-MM-dd HH:mm")">Hôm nay - @Model[0].ToString("dd/MM/yyyy")</option>
+        <option value="@Model[1].ToString("yyyy-MM-dd HH:mm")">Ngày mai - @Model[1].ToString("dd/MM/yyyy")</option>
+        <option value="@Model[2].ToString("yyyy-MM-dd HH:mm")">Ngày mốt - @Model[2].ToString("dd/MM/yyyy")</option>
+    }
+    else
+    {
+        <option value="@Model[0].ToString("yyyy-MM-dd HH:mm")">Ngày mai - @Model[0].ToString("dd/MM/yyyy")</option>
+        <option value="@Model[1].ToString("yyyy-MM-dd HH:mm")">Ngày mốt - @Model[1].ToString("dd/MM/yyyy")</option>
+    }
+
 </select>

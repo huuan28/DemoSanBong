@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<DemoSanBong.ViewModels.FieldViewModel>
-
+@{
+    double amount =0;
+    double deposit = 0;
+}
 <table class="table">
     <thead>
         <tr>
@@ -47,6 +50,9 @@
                     <a asp-action="Details" asp-controller="Room" target="_blank" asp-route-id="@item.Id">Chi tiết</a>
                 </td>
             </tr>
+            amount += item.Price;
         }
+        <h3>Thành tiền: @amount</h3>
+        <h3>Đặt cọc: @(amount*0.2)</h3>
     </tbody>
 </table>

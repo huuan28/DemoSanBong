@@ -7,7 +7,7 @@
 
         public List<DateTime> SelectBegin(DateTime date)
         {
-            int begin = (date.Date == DateTime.Today && DateTime.Now.Hour > open) ? (DateTime.Now.Hour + 1): open;
+            int begin = (date.Date == DateTime.Today && DateTime.Now.Hour > open) ? (DateTime.Now.Hour + 1) : open;
             var list = new List<DateTime>();
             for (var i = begin; i < close; i++)
             {
@@ -28,7 +28,8 @@
         public List<DateTime> SelectEnd(DateTime beginTime)
         {
             var list = new List<DateTime>();
-            for (var i = 1; i <= close-beginTime.Hour; i++)
+            var time = beginTime.Hour == 0 ? DateTime.Now.Hour : beginTime.Hour;
+            for (var i = 1; i <= close - time; i++)
             {
                 list.Add(beginTime.AddHours(i));
             }
@@ -37,7 +38,8 @@
         public List<DateTime> GetDays()
         {
             var list = new List<DateTime>();
-            list.Add(DateTime.Today);
+            if (DateTime.Now.Hour < 21)
+                list.Add(DateTime.Today);
             list.Add(DateTime.Today.AddDays(1));
             list.Add(DateTime.Today.AddDays(2));
             return list;

@@ -17,7 +17,7 @@ namespace DemoSanBong.Controllers
             _Context = context;
         }
         public IActionResult Create ()
-        {
+        { 
             return View();
         }
         [Authorize(Roles = "Customer")]

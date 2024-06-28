@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Booking";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    double amount = 0;
+    double deposit = 0;
 }
 
 <h1>Booking</h1>
@@ -15,7 +17,7 @@
     <div class="col-md-4">
         <form asp-action="Booking">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @if (User.Identity.IsAuthenticated)
+            @if (!User.Identity.IsAuthenticated)
             {
                 <div class="form-group">
                     <label asp-for="PhoneNumber" class="control-label"></label>
@@ -27,6 +29,11 @@
                     <input asp-for="FullName" class="form-control" />
                     <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="PhoneNumber" class="form-control" />
+                <input type="hidden" asp-for="FullName" class="form-control" />
             }
             <div class="form-group">
                 <label class="control-label">Loại hình thuê</label>
@@ -56,11 +63,6 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Deposit" class="control-label"></label>
-                <input disabled="disabled" asp-for="Deposit" class="form-control" />
-                <span asp-validation-for="Deposit" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -73,9 +75,9 @@
         <h2>Đã chọn</h2>
         <div id="selectedFields">
             @Html.Partial("SelectedField", Model.SelectedFields)
+
         </div>
     </div>
-
 </div>
 
 <div>
@@ -154,6 +156,7 @@
                             // Đăng ký lại các sự kiện cần thiết sau khi nội dung được thay thế
                             registerUpdateTime();
                             registerAddRoomButtons();
+                            registerRemoveRoomButtons();
                         },
                         error: function (error) {
                             console.error('Error updating time:', error);

@@ -1,4 +1,5 @@
 ﻿using DemoSanBong.Models;
+using DemoSanBong.Services;
 using DemoSanBong.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace DemoSanBong.Controllers
 {
-    public class BookingController :Controller
+    public class BookingController : Controller
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
@@ -18,12 +19,13 @@ namespace DemoSanBong.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ICompositeViewEngine _viewEngine;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IVnPayService _vnPayService;
 
         private BookingViewModel currentBooking;
 
         private AppUser currentUser;
 
-        public BookingController(AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ICompositeViewEngine viewEngine, IServiceProvider serviceProvider)
+        public BookingController(AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ICompositeViewEngine viewEngine, IServiceProvider serviceProvider, IVnPayService vnPayService)
         {
             _context = context;
             _userManager = userManager;
@@ -31,7 +33,10 @@ namespace DemoSanBong.Controllers
 
             _viewEngine = viewEngine;
             _serviceProvider = serviceProvider;
+            _vnPayService = vnPayService;
         }
+
+        //Lấy user đang đăng nhập
         private Task<AppUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
 
@@ -39,12 +44,14 @@ namespace DemoSanBong.Controllers
         //kiểm tra sân trống
         public bool isAvailable(int roomId, DateTime startDate, DateTime endDate)
         {
+            //tìm lịch đặt sân có cùng thời gian chọn
             var bookings = _context.Bookings
                 .Where(i =>
                     (i.CheckinDate <= startDate && i.CheckoutDate >= startDate) ||
                     (i.CheckinDate <= endDate && i.CheckoutDate >= endDate) ||
-                    (i.CheckinDate >= startDate && i.CheckoutDate <= endDate))
-                .ToList();
+                    (i.CheckinDate >= startDate && i.CheckoutDate <= endDate)).ToList();
+
+            //Duyệt qua các sân có trong danh sách lịch đặt vừa tìm để lọc ra những sân đã đặt
             foreach (var booking in bookings)
             {
                 bool flag = _context.BookingDetails.Any(i => i.FieldId == roomId && i.BookingId == booking.Id);
@@ -53,6 +60,7 @@ namespace DemoSanBong.Controllers
             }
             return true;
         }
+
         //cập nhật danh sách sân trống
         public void UpDateAvailbleField()
         {
@@ -72,10 +80,13 @@ namespace DemoSanBong.Controllers
                         PricePerMonth = field.GetCurrentPricePerMonth(_context),
                         Description = field.Description
                     }
-                    ); }
+                    );
+                }
             }
             SaveBookingToSession(currentBooking);
         }
+
+        //bỏ sân vi phạm ràng buộc thời gian
         public void RemoveFieldInvalid()
         {
             currentBooking = GetBookingFromSession();
@@ -98,6 +109,7 @@ namespace DemoSanBong.Controllers
             SaveBookingToSession(currentBooking);
         }
 
+        //lấy thông tin đặt sân từ sesstion
         private BookingViewModel GetBookingFromSession()
         {
             var bookingJson = HttpContext.Session.GetString("CurrentBooking");
@@ -110,8 +122,8 @@ namespace DemoSanBong.Controllers
                 model.SelectedFields = new List<FieldViewModel>();
                 var Times = new BookingTime(rules);
                 model.SelectDay = Times.GetDays();
-                model.SelectBegin = Times.SelectBegin(DateTime.Today);
-                model.SelectEnd = Times.SelectEnd(model.SelectBegin[0]);
+                model.SelectBegin = Times.SelectBegin(model.SelectDay.FirstOrDefault());
+                model.SelectEnd = Times.SelectEnd(model.SelectBegin.FirstOrDefault());
                 model.CheckinDate = model.SelectBegin.FirstOrDefault();
                 model.CheckoutDate = model.SelectEnd.FirstOrDefault();
                 return model;
@@ -119,6 +131,7 @@ namespace DemoSanBong.Controllers
             model = JsonConvert.DeserializeObject<BookingViewModel>(bookingJson);
             return model;
         }
+
         //Lưu thông tin đặt sân vào session
         private void SaveBookingToSession(BookingViewModel booking)
         {
@@ -126,29 +139,13 @@ namespace DemoSanBong.Controllers
             HttpContext.Session.SetString("CurrentBooking", bookingJson);
         }
 
-
-        public async Task<IActionResult> Booking()
-        {
-            currentBooking = GetBookingFromSession();
-            currentUser = await GetCurrentUserAsync();
-            if(currentUser != null)
-            {
-                currentBooking.FullName = currentUser.UserName;
-                currentBooking.PhoneNumber = currentUser.PhoneNumber;
-            }
-           
-            UpDateAvailbleField();
-
-            SaveBookingToSession(currentBooking);
-            return View(currentBooking);
-        }
-
+        //thêm sân vào danh sách chọn
         public IActionResult AddField(int Id)
         {
             currentBooking = GetBookingFromSession();
             var field = _context.Fields.Find(Id);
             if (!currentBooking.SelectedFields.Any(i => i.Id == Id))
-                currentBooking.SelectedFields.Add( new FieldViewModel
+                currentBooking.SelectedFields.Add(new FieldViewModel
                 {
                     Id = field.Id,
                     Name = field.Name,
@@ -160,29 +157,19 @@ namespace DemoSanBong.Controllers
             SaveBookingToSession(currentBooking);
             return PartialView("SelectedField", currentBooking.SelectedFields);
         }
+
+        //bỏ sân khỏi danh sách chọn
         public IActionResult RemoveField(int Id)
         {
             currentBooking = GetBookingFromSession();
-            var field = currentBooking.SelectedFields.FirstOrDefault(i=>i.Id==Id);
+            var field = currentBooking.SelectedFields.FirstOrDefault(i => i.Id == Id);
             if (field != null)
                 currentBooking.SelectedFields.Remove(field);
             SaveBookingToSession(currentBooking);
             return PartialView("SelectedField", currentBooking.SelectedFields);
         }
-        //[HttpPost]
-        //public IActionResult UpdateTime(DateTime start, DateTime end)
-        //{
-        //    currentBooking = GetBookingFromSession();
-        //    currentBooking.CheckinDate = start;
-        //    currentBooking.CheckoutDate = end;
-        //    var rules = _context.Rules.FirstOrDefault();
-        //    currentBooking.SelectEnd = new BookingTime(rules).SelectEnd(start);
-        //    UpDateAvailbleField();
-        //    RemoveFieldInvalid();
-        //    SaveBookingToSession(currentBooking);
-        //    //return PartialView("AvailableField", currentBooking.AvailableField);
-        //    return View("Booking", currentBooking);
-        //}
+
+        //Cập nhật sân trống khi thay đổi option giờ trong form đặt sân
         [HttpPost]
         public IActionResult UpdateTime(DateTime start, DateTime end)
         {
@@ -197,10 +184,12 @@ namespace DemoSanBong.Controllers
 
             var availableFieldsHtml = RenderPartialViewToString("AvailableField", currentBooking.AvailableField);
             var selectedFieldsHtml = RenderPartialViewToString("SelectedField", currentBooking.SelectedFields);
-
+            //Chuỗi JSON trả về view cho AJAX xử lý cập nhật 2 partialview để không tải lại trang
             return Json(new { availableFieldsHtml, selectedFieldsHtml });
         }
 
+
+        //chuyển dữ liệu của partial view sang dạng chuỗi JSON
         private string RenderPartialViewToString(string viewName, object model)
         {
             var viewEngine = HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
@@ -233,21 +222,26 @@ namespace DemoSanBong.Controllers
             }
         }
 
+
+        //Cập nhật lại 2 thẻ select thời gian bắt đầu và kết thúc dựa vào ngày được chọn
+        //nếu là hôm nay thì phải bắt đầu từ giờ hiện tại +1 (vD: hiện tại 9h15 thì option đầu tiên là 10h
+        //ngược lại thì options từ 6-21(begin) | 7-22(end)
         [HttpPost]
         public IActionResult UpdateBeginEndTimes(DateTime selectedDate)
         {
+            //lấy dữ liệu từ bảng tham số quy định để có giờ mở sân và giờ đóng sân
             var rules = _context.Rules.FirstOrDefault();
             var times = new BookingTime(rules);
 
-            var selectBegin = times.SelectBegin(selectedDate);
-            var selectEnd = times.SelectEnd(selectBegin.FirstOrDefault());
+            var selectBegin = times.SelectBegin(selectedDate); //danh sách option giờ bắt đầu
+            var selectEnd = times.SelectEnd(selectBegin.FirstOrDefault()); //danh sách option giờ kết thúc
 
-            currentBooking = GetBookingFromSession();
+            currentBooking = GetBookingFromSession();//lấy dữ liệu của form hiện tại đang lưu trong session
             currentBooking.CheckinDate = selectBegin.FirstOrDefault();
             currentBooking.CheckoutDate = selectEnd.FirstOrDefault();
-            UpDateAvailbleField();
-            RemoveFieldInvalid();
-            SaveBookingToSession(currentBooking);
+            UpDateAvailbleField(); //cập nhật sân trống
+            RemoveFieldInvalid(); //bỏ sân đã chọn bị nhưng không còn trống với giờ vừa thay đổi
+            SaveBookingToSession(currentBooking); //lưu thông tin đã chọn vào session
             var result = new
             {
                 SelectBegin = selectBegin.Select(d => d.ToString("yyyy-MM-dd HH:mm")).ToList(),
@@ -255,6 +249,149 @@ namespace DemoSanBong.Controllers
             };
 
             return Json(result);
+        }
+
+        //View đặt sân
+        public async Task<IActionResult> Booking()
+        {
+            currentBooking = GetBookingFromSession();
+            currentUser = await GetCurrentUserAsync();
+            if (currentUser != null)
+            {
+                currentBooking.FullName = currentUser.UserName;
+                currentBooking.PhoneNumber = currentUser.PhoneNumber;
+            }
+
+            UpDateAvailbleField();
+
+            SaveBookingToSession(currentBooking);
+            return View(currentBooking);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Booking(BookingViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _context.Users.FirstOrDefault(i => i.PhoneNumber == model.PhoneNumber);
+                //Kiểm tra đã đăng ký chưa
+                if (user == null)
+                {
+                    if(!await CreateUnRegisterUser(model.PhoneNumber, model.FullName)); //lưu tài khoản loại chưa đăng ký
+                    user = await _userManager.FindByNameAsync(model.PhoneNumber);
+                }
+                else if (user.FullName != model.FullName && user.IsRegisted)
+                {
+                    ViewBag.Error = "SĐT này đã sử dụng với tên khác, hãy đăng nhập để cập nhật họ và tên!";
+                    return View(model);
+                }
+                var rules = _context.Rules.FirstOrDefault();
+                int stayDuration = model.CheckoutDate.Hour - model.CheckinDate.Hour;
+                currentBooking = GetBookingFromSession();
+                currentBooking.CheckinDate = model.CheckinDate;
+                currentBooking.CheckinDate = model.CheckinDate;
+                currentBooking.FullName = model.FullName;
+                currentBooking.PhoneNumber = model.PhoneNumber;
+                currentBooking.Deposit = currentBooking.SelectedFields.Sum(i => i.Price) * rules.DepositPercent/100;
+                SaveBookingToSession(currentBooking);
+                var vnPayModel = new VnPaymentRequestModel()
+                {
+                    Amount = (double)currentBooking.Deposit,
+                    CreateDate = DateTime.Now,
+                    Description = $"{model.PhoneNumber}-{model.FullName}",
+                    FullName = model.FullName,
+                    BookingId = new Random().Next(1, 1000)
+                };
+                return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+            }
+            return RedirectToAction("Booking");
+        }
+
+        //Tạo tài khoản tạm cho số điện thoại chưa đăng ký
+        public async Task<bool> CreateUnRegisterUser(string Phone, string FullName)
+        {
+            if (_context.Users.Any(i => i.PhoneNumber == Phone))
+                return false;
+
+            var user = new AppUser
+            {
+                UserName = Phone,
+                FullName = FullName,
+                IsRegisted = false,
+                PhoneNumber = Phone,
+                CreateDate = DateTime.Now,
+            };
+            var result = await _userManager.CreateAsync(user, "Abcd@1234");
+            if (result.Succeeded)
+            {
+                // Kiểm tra và tạo vai trò "Customer" nếu chưa có
+                if (!await _roleManager.RoleExistsAsync("Customer"))
+                {
+                    var role = new IdentityRole("Customer");
+                    await _roleManager.CreateAsync(role);
+                }
+
+                // Gán vai trò "Customer" cho người dùng
+                await _userManager.AddToRoleAsync(user, "Customer");
+
+                return true;
+            }
+            return false;
+        }
+
+        //kết quả trả về của VNPAY
+        public async Task<IActionResult> PaymentCallBack()
+        {
+            // Lấy thông tin từ query string của VnPay để xác thực và cập nhật trạng thái đơn hàng
+            var response = _vnPayService.PaymentExecute(Request.Query);
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                //thanh toán thất bại
+                return RedirectToAction("PaymentFail");
+            }
+
+            //lấy thông tin đặt phòng từ viewmodel
+            currentBooking = GetBookingFromSession();
+
+            //lấy thông tin khách hàng
+            var user = await _userManager.FindByNameAsync(currentBooking.PhoneNumber);
+            // tạo mới đơn đặt phòng
+            var booking = new Booking
+            {
+                CreateDate = DateTime.Now,
+                CheckinDate = currentBooking.CheckinDate,
+                CheckoutDate = currentBooking.CheckoutDate,
+                Deposit = (double)currentBooking.Deposit,
+                CusID = user.Id,
+                Status = Models.Booking.Deposited
+            };
+            //lưu vào DB
+            _context.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
+
+            //thêm và lưu danh sách phòng đã chọn
+            foreach (var field in currentBooking.SelectedFields)
+            {
+                var detail = new BookingDetail
+                {
+                    BookingId = booking.Id,
+                    FieldId = (int)field.Id,
+                };
+                _context.BookingDetails.Add(detail);
+            }
+            await _context.SaveChangesAsync();
+            //xóa viewmodel
+            HttpContext.Session.Remove("currentBooking");
+
+            return RedirectToAction("PaymentSuccess");
+        }
+        public IActionResult PaymentSuccess()
+        {
+            return View();
+        }
+        public IActionResult PaymentFail()
+        {
+            return View();
         }
     }
 }

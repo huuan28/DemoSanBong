@@ -18,7 +18,7 @@ namespace DemoSanBong.ViewModels
         public DateTime CheckoutDate { get; set; }
 
         [Display(Name = "Tiền đặt cọc")]
-        public double Deposit { get; set; }
+        public double? Deposit { get; set; }
 
         public string PhoneNumber { get; set; }
         public string FullName { get; set; }
@@ -26,7 +26,7 @@ namespace DemoSanBong.ViewModels
         public List<FieldViewModel>? AvailableField {  get; set; }
         public List<FieldViewModel>? SelectedFields { get; set; }
 
-        public List<DateTime> SelectDay { get; set; }
+        public List<DateTime>? SelectDay { get; set; }
         public List<DateTime>? SelectBegin { get; set; }
         public List<DateTime>? SelectEnd { get; set; }
     }

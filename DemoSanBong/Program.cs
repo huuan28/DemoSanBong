@@ -1,4 +1,5 @@
 ﻿using DemoSanBong.Models;
+using DemoSanBong.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,8 +33,10 @@ namespace DemoSanBong
                 options.Password.RequireNonAlphanumeric = false;// Yêu cầu ký tự đặc biệt là false
                 options.Password.RequireUppercase = false;// Yêu cầu chữ hoa là false
                 options.Password.RequireLowercase = false;// Yêu cầu chữ thường là false
-                options.User.RequireUniqueEmail = true;// Yêu cầu email là duy nhất
+                options.User.RequireUniqueEmail = false;// Yêu cầu email là duy nhất
             }).AddEntityFrameworkStores<AppDbContext>();
+            //Đăng ký dịch vụ VnPay
+            builder.Services.AddSingleton<IVnPayService, VnPayService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
