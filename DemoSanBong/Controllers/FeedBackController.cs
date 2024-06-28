@@ -19,14 +19,15 @@ namespace DemoSanBong.Controllers
             _Context = context;
             _userManager = userManager;
         }
-        public IActionResult Create ()
+        public async Task<IActionResult> Create ()
         {
             var model = new CreateFeedbackViewModel();
             if(User.Identity.IsAuthenticated)
             {
-                
+                var user= await _userManager.GetUserAsync(HttpContext.User);
+                model.CusId = user.Id;
             }
-            return View();
+            return View(model);
         }
         [Authorize(Roles = "Customer")]
         [HttpPost]
@@ -116,19 +117,12 @@ namespace DemoSanBong.Controllers
         public IActionResult Index()
         {
             var list =_Context.FeedBacks.ToList();
-            var models = new List<EditFeedbackViewModel>();
-            foreach (var fb in list)
+            foreach( var item in list)
             {
-                var model = new EditFeedbackViewModel
-                {
-                    CusId = fb.CusId,
-                    Stars = fb.Stars,
-                    Commment = fb.Commment,
-                    IsShow = fb.IsShow,
-                };
-                models.Add(model);
+                var user = _Context.Users.Find(item.CusId);
+                item.Customer = user;
             }
-            return View(models);
+            return View(list);
         }
 
     }
