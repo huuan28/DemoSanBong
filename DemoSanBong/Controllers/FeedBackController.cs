@@ -1,6 +1,7 @@
 ﻿using DemoSanBong.Models;
 using DemoSanBong.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Differencing;
 using System.Security.Claims;
@@ -11,13 +12,20 @@ namespace DemoSanBong.Controllers
     public class FeedBackController : Controller
     {
         private readonly AppDbContext _Context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public FeedBackController (AppDbContext context)
+        public FeedBackController (AppDbContext context, UserManager<AppUser> userManager)
         {
             _Context = context;
+            _userManager = userManager;
         }
         public IActionResult Create ()
         {
+            var model = new CreateFeedbackViewModel();
+            if(User.Identity.IsAuthenticated)
+            {
+                
+            }
             return View();
         }
         [Authorize(Roles = "Customer")]
