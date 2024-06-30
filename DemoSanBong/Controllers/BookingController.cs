@@ -15,8 +15,6 @@ namespace DemoSanBong.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ICompositeViewEngine _viewEngine;
         private readonly IServiceProvider _serviceProvider;
         private readonly IVnPayService _vnPayService;
@@ -25,11 +23,10 @@ namespace DemoSanBong.Controllers
 
         private AppUser currentUser;
 
-        public BookingController(AppDbContext context, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, ICompositeViewEngine viewEngine, IServiceProvider serviceProvider, IVnPayService vnPayService)
+        public BookingController(AppDbContext context, UserManager<AppUser> userManager, ICompositeViewEngine viewEngine, IServiceProvider serviceProvider, IVnPayService vnPayService)
         {
             _context = context;
             _userManager = userManager;
-            _roleManager = roleManager;
 
             _viewEngine = viewEngine;
             _serviceProvider = serviceProvider;
@@ -49,7 +46,8 @@ namespace DemoSanBong.Controllers
                 .Where(i =>
                     (i.CheckinDate <= startDate && i.CheckoutDate >= startDate) ||
                     (i.CheckinDate <= endDate && i.CheckoutDate >= endDate) ||
-                    (i.CheckinDate >= startDate && i.CheckoutDate <= endDate)).ToList();
+                    (i.CheckinDate >= startDate && i.CheckoutDate <= endDate))
+                .ToList();
 
             //Duyệt qua các sân có trong danh sách lịch đặt vừa tìm để lọc ra những sân đã đặt
             foreach (var booking in bookings)
@@ -58,6 +56,7 @@ namespace DemoSanBong.Controllers
                 if (flag)
                     return false;
             }
+
             return true;
         }
 
@@ -85,7 +84,29 @@ namespace DemoSanBong.Controllers
             }
             SaveBookingToSession(currentBooking);
         }
-
+        public List<FieldViewModel> GetAvailbleField(BookingTime time)
+        {
+            var list = new List<FieldViewModel>();
+            var fields = _context.Fields.ToList();
+            var begin = time.SelectBegin(time.GetDays().FirstOrDefault()).FirstOrDefault();
+            foreach (var field in fields)
+            {
+                if (isAvailable(field.Id, begin, begin.AddHours(1)))
+                {
+                    list.Add(
+                    new FieldViewModel
+                    {
+                        Id = field.Id,
+                        Name = field.Name,
+                        Type = field.Type,
+                        Price = field.getCurrentPrice(_context),
+                        PricePerMonth = field.GetCurrentPricePerMonth(_context),
+                        Description = field.Description
+                    });
+                }
+            }
+            return list;
+        }
         //bỏ sân vi phạm ràng buộc thời gian
         public void RemoveFieldInvalid()
         {
@@ -93,7 +114,7 @@ namespace DemoSanBong.Controllers
             var fieldsToRemove = new List<FieldViewModel>();
 
             // Lặp qua các mục và thêm các mục không hợp lệ vào danh sách tạm thời
-            foreach (var field in currentBooking.SelectedFields)
+            foreach (var field in currentBooking.SelectedFields.SelectedFields)
             {
                 if (!isAvailable((int)field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
                 {
@@ -104,7 +125,7 @@ namespace DemoSanBong.Controllers
             // Xóa các mục không hợp lệ ra khỏi tập hợp gốc
             foreach (var field in fieldsToRemove)
             {
-                currentBooking.SelectedFields.Remove(field);
+                currentBooking.SelectedFields.SelectedFields.Remove(field);
             }
             SaveBookingToSession(currentBooking);
         }
@@ -117,10 +138,11 @@ namespace DemoSanBong.Controllers
             if (string.IsNullOrEmpty(bookingJson))
             {
                 var rules = _context.Rules.FirstOrDefault();
-                model = new BookingViewModel();
-                model.AvailableField = new List<FieldViewModel>();
-                model.SelectedFields = new List<FieldViewModel>();
                 var Times = new BookingTime(rules);
+                model = new BookingViewModel();
+                model.AvailableField = GetAvailbleField(Times);
+                model.SelectedFields = new SelectedFieldsViewModel();
+                model.SelectedFields.SelectedFields = new List<FieldViewModel>();
                 model.SelectDay = Times.GetDays();
                 model.SelectBegin = Times.SelectBegin(model.SelectDay.FirstOrDefault());
                 model.SelectEnd = Times.SelectEnd(model.SelectBegin.FirstOrDefault());
@@ -144,8 +166,8 @@ namespace DemoSanBong.Controllers
         {
             currentBooking = GetBookingFromSession();
             var field = _context.Fields.Find(Id);
-            if (!currentBooking.SelectedFields.Any(i => i.Id == Id))
-                currentBooking.SelectedFields.Add(new FieldViewModel
+            if (!currentBooking.SelectedFields.SelectedFields.Any(i => i.Id == Id))
+                currentBooking.SelectedFields.SelectedFields.Add(new FieldViewModel
                 {
                     Id = field.Id,
                     Name = field.Name,
@@ -162,9 +184,9 @@ namespace DemoSanBong.Controllers
         public IActionResult RemoveField(int Id)
         {
             currentBooking = GetBookingFromSession();
-            var field = currentBooking.SelectedFields.FirstOrDefault(i => i.Id == Id);
+            var field = currentBooking.SelectedFields.SelectedFields.FirstOrDefault(i => i.Id == Id);
             if (field != null)
-                currentBooking.SelectedFields.Remove(field);
+                currentBooking.SelectedFields.SelectedFields.Remove(field);
             SaveBookingToSession(currentBooking);
             return PartialView("SelectedField", currentBooking.SelectedFields);
         }
@@ -227,18 +249,27 @@ namespace DemoSanBong.Controllers
         //nếu là hôm nay thì phải bắt đầu từ giờ hiện tại +1 (vD: hiện tại 9h15 thì option đầu tiên là 10h
         //ngược lại thì options từ 6-21(begin) | 7-22(end)
         [HttpPost]
-        public IActionResult UpdateBeginEndTimes(DateTime selectedDate)
+        public IActionResult UpdateSelectedDay(DateTime selectedDate)
         {
             //lấy dữ liệu từ bảng tham số quy định để có giờ mở sân và giờ đóng sân
-            var rules = _context.Rules.FirstOrDefault();
-            var times = new BookingTime(rules);
+            var rules = _context.Rules.FirstOrDefault(); //lấy các tham số qui định 
+            var times = new BookingTime(rules); //BookingTime là lớp chức năng chứa các phương thức lấy thời gian đặt sân
 
             var selectBegin = times.SelectBegin(selectedDate); //danh sách option giờ bắt đầu
             var selectEnd = times.SelectEnd(selectBegin.FirstOrDefault()); //danh sách option giờ kết thúc
 
             currentBooking = GetBookingFromSession();//lấy dữ liệu của form hiện tại đang lưu trong session
-            currentBooking.CheckinDate = selectBegin.FirstOrDefault();
-            currentBooking.CheckoutDate = selectEnd.FirstOrDefault();
+
+            if (currentBooking.RentalType == 0)
+            {
+                currentBooking.CheckinDate = selectBegin.FirstOrDefault();
+                currentBooking.CheckoutDate = selectEnd.FirstOrDefault();
+            }
+            else
+            {
+                currentBooking.CheckinDate = selectedDate.Date;
+                currentBooking.CheckoutDate = selectedDate.Date.AddDays(30);
+            }
             UpDateAvailbleField(); //cập nhật sân trống
             RemoveFieldInvalid(); //bỏ sân đã chọn bị nhưng không còn trống với giờ vừa thay đổi
             SaveBookingToSession(currentBooking); //lưu thông tin đã chọn vào session
@@ -249,6 +280,19 @@ namespace DemoSanBong.Controllers
             };
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateRentalType(int rentalType)
+        {
+            currentBooking = GetBookingFromSession();
+            currentBooking.RentalType = rentalType;
+            currentBooking.SelectedFields.RentalType = rentalType;
+            UpDateAvailbleField();
+            RemoveFieldInvalid();
+            SaveBookingToSession(currentBooking);
+
+            return PartialView("SelectedField", currentBooking.SelectedFields);
         }
 
         //View đặt sân
@@ -277,7 +321,7 @@ namespace DemoSanBong.Controllers
                 //Kiểm tra đã đăng ký chưa
                 if (user == null)
                 {
-                    if(!await CreateUnRegisterUser(model.PhoneNumber, model.FullName)); //lưu tài khoản loại chưa đăng ký
+                    if (!await CreateUnRegisterUser(model.PhoneNumber, model.FullName)) ; //lưu tài khoản loại chưa đăng ký
                     user = await _userManager.FindByNameAsync(model.PhoneNumber);
                 }
                 else if (user.FullName != model.FullName && user.IsRegisted)
@@ -288,11 +332,24 @@ namespace DemoSanBong.Controllers
                 var rules = _context.Rules.FirstOrDefault();
                 int stayDuration = model.CheckoutDate.Hour - model.CheckinDate.Hour;
                 currentBooking = GetBookingFromSession();
-                currentBooking.CheckinDate = model.CheckinDate;
-                currentBooking.CheckinDate = model.CheckinDate;
                 currentBooking.FullName = model.FullName;
                 currentBooking.PhoneNumber = model.PhoneNumber;
-                currentBooking.Deposit = currentBooking.SelectedFields.Sum(i => i.Price) * rules.DepositPercent/100;
+                currentBooking.RentalType = model.RentalType;
+                //Nếu chọn thuê giờ
+                if (currentBooking.RentalType == 0)
+                {
+                    currentBooking.CheckinDate = model.CheckinDate;
+                    currentBooking.CheckoutDate = model.CheckoutDate;
+                    currentBooking.Deposit = currentBooking.SelectedFields.SelectedFields.Sum(i => i.Price) * rules.DepositPercent / 100;
+                }
+                else
+                {
+                    //Chọn thuê tháng
+                    currentBooking.Deposit = currentBooking.SelectedFields.SelectedFields.Sum(i => i.PricePerMonth) * rules.DepositPercent / 100;
+                    currentBooking.CheckinDate = model.SelectedDate;
+                    currentBooking.CheckoutDate = model.SelectedDate.Date.AddDays(30);
+                }
+
                 SaveBookingToSession(currentBooking);
                 var vnPayModel = new VnPaymentRequestModel()
                 {
@@ -324,13 +381,6 @@ namespace DemoSanBong.Controllers
             var result = await _userManager.CreateAsync(user, "Abcd@1234");
             if (result.Succeeded)
             {
-                // Kiểm tra và tạo vai trò "Customer" nếu chưa có
-                if (!await _roleManager.RoleExistsAsync("Customer"))
-                {
-                    var role = new IdentityRole("Customer");
-                    await _roleManager.CreateAsync(role);
-                }
-
                 // Gán vai trò "Customer" cho người dùng
                 await _userManager.AddToRoleAsync(user, "Customer");
 
@@ -370,7 +420,7 @@ namespace DemoSanBong.Controllers
             await _context.SaveChangesAsync();
 
             //thêm và lưu danh sách phòng đã chọn
-            foreach (var field in currentBooking.SelectedFields)
+            foreach (var field in currentBooking.SelectedFields.SelectedFields)
             {
                 var detail = new BookingDetail
                 {

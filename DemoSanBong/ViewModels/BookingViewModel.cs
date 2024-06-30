@@ -24,7 +24,7 @@ namespace DemoSanBong.ViewModels
         public string FullName { get; set; }
 
         public List<FieldViewModel>? AvailableField {  get; set; }
-        public List<FieldViewModel>? SelectedFields { get; set; }
+        public SelectedFieldsViewModel? SelectedFields { get; set; }
 
         public List<DateTime>? SelectDay { get; set; }
         public List<DateTime>? SelectBegin { get; set; }

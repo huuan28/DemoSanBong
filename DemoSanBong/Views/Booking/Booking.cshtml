@@ -75,7 +75,6 @@
         <h2>Đã chọn</h2>
         <div id="selectedFields">
             @Html.Partial("SelectedField", Model.SelectedFields)
-
         </div>
     </div>
 </div>
@@ -92,7 +91,7 @@
                 $('#SelectedDate').change(function () {
                     var selectedDate = $(this).val();
                     $.ajax({
-                        url: '@Url.Action("UpdateBeginEndTimes", "Booking")',
+                        url: '@Url.Action("UpdateSelectedDay", "Booking")',
                         type: 'POST',
                         data: { selectedDate: selectedDate },
                         success: function (result) {
@@ -104,41 +103,21 @@
                             selectEnd.empty();
 
                             $.each(result.selectBegin, function (index, value) {
-                                console.log("Appending to selectBegin:", value);
                                 var optionText = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                                 selectBegin.append('<option value="' + value + '">' + optionText + '</option>');
                             });
 
                             // Add new options to selectEnd
                             $.each(result.selectEnd, function (index, value) {
-                                console.log("Appending to selectEnd:", value);
                                 var optionText = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                                 selectEnd.append('<option value="' + value + '">' + optionText + '</option>');
                             });
                             registerAddRoomButtons()
+                            registerRemoveRoomButtons();
                         }
                     });
                 });
             }
-            // function registerUpdateTime() {
-            //     $('#CheckinDate, #CheckoutDate').change(function () {
-            //         var start = $('#CheckinDate').val();
-            //         var end = $('#CheckoutDate').val();
-
-            //         $.ajax({
-            //             url: '@Url.Action("UpdateTime", "Booking")',
-            //             type: 'POST',
-            //             data: { start: start, end: end },
-            //             success: function (result) {
-            //                 // Xử lý kết quả trả về nếu cần thiết
-            //                 $('#availableFields').html(result); // Cập nhật phần tử HTML hiển thị sân bóng
-            //                 registerAddRoomButtons()
-            //             },
-            //             error: function (error) {
-            //                 console.error('Error updating time:', error);
-            //             }
-            //         });
-            //     });
             function registerUpdateTime() {
                 $('#CheckinDate, #CheckoutDate').change(function () {
                     var start = $('#CheckinDate').val();
@@ -192,10 +171,44 @@
                     });
                 });
             }
+            function registerRentalTypeChange() {
+                $('select[name="RentalType"]').change(function () {
+                    var rentalType = $(this).val();
+                    var start = $('#CheckinDate').val();
+                    var end = $('#CheckoutDate').val();
+
+                    if (rentalType == '1') { // Giá trị 1 tương ứng với "Thuê tháng"
+                        $('#begintime, #endtime').hide();
+                    } else {
+                        $('#begintime, #endtime').show();
+                    }
+
+                    // Gửi AJAX request để cập nhật nội dung của SelectedField
+                    $.ajax({
+                        url: '@Url.Action("UpdateRentalType", "Booking")',
+                        type: 'POST',
+                        data: { rentalType: rentalType, start: start, end: end },
+                        success: function (result) {
+                            $('#selectedFields').html(result);
+                            registerRemoveRoomButtons();
+                        },
+                        error: function (error) {
+                            console.error('Error updating rental type:', error);
+                        }
+                    });
+                });
+
+                // Kiểm tra giá trị khi trang được tải lần đầu
+                if ($('select[name="RentalType"]').val() == '1') {
+                    $('#begintime, #endtime').hide();
+                }
+            }
+
             registerAddRoomButtons();
             registerRemoveRoomButtons();
             registerUpdateDay();
-            registerUpdateTime()
+            registerUpdateTime();
+            registerRentalTypeChange()
             // $('#CheckinDate').change(function () {
             //     var start = $(this).val();
             //     var end = $('#CheckoutDate').val();
