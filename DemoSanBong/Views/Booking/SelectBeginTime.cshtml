@@ -1,6 +1,6 @@
 ﻿@model List<DateTime> 
 
-<select id="CheckinDate" name="CheckinDate">
+<select id="CheckinDate" name="CheckinDate" class="form-select">
     @foreach (var hour in Model)
     {
         <option value="@hour.ToString("yyyy-MM-dd HH:mm")">@hour.ToString("HH:mm tt")</option>

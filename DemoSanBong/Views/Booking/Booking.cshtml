@@ -7,80 +7,68 @@
     double deposit = 0;
 }
 
-<h1>Booking</h1>
-
-<h4>Booking</h4>
 <hr />
 
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Booking">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            @if (!User.Identity.IsAuthenticated)
-            {
-                <div class="form-group">
-                    <label asp-for="PhoneNumber" class="control-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="FullName" class="control-label"></label>
-                    <input asp-for="FullName" class="form-control" />
-                    <span asp-validation-for="FullName" class="text-danger"></span>
-                </div>
-            }
-            else
-            {
-                <input type="hidden" asp-for="PhoneNumber" class="form-control" />
-                <input type="hidden" asp-for="FullName" class="form-control" />
-            }
-            <div class="form-group">
-                <label class="control-label">Loại hình thuê</label>
-                <select name="RentalType">
-                    <option value="0">Thuê giờ</option>
-                    <option value="1">Thuê tháng</option>
-                </select>
-                <span asp-validation-for="RentalType" class="text-danger"></span>
-            </div>
+<form asp-action="Booking">
+    <div class="container-fluid booking pb-5 wow fadeIn" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeIn;">
+        <div class="container">
+            <div class="bg-white shadow" style="padding: 35px;">
+                <div class="row g-2">
+                    <div class="col-md-10">
+                        <div class="row g-2">
+                            <div class="col-md-3">
+                                <select class="form-select" name="RentalType">
+                                    <option value="0">Thuê giờ</option>
+                                    <option value="1">Thuê tháng</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3" id="selecteDay">
+                                @Html.Partial("SelectedDate", Model.SelectDay)
+                            </div>
+                            <div id="begintime" class="col-md-3">
+                                @Html.Partial("SelectBeginTime", Model.SelectBegin)
+                            </div>
+                            <div class="col-md-3" id="endtime">
+                                @Html.Partial("SelectEndTime", Model.SelectEnd)
+                            </div>
 
-            <div id="selecteDay">
-                <label class="control-label">Chọn ngày</label>
-                @Html.Partial("SelectedDate", Model.SelectDay)
-            </div>
-
-            <div class="form-group">
-                <div id="begintime">
-                    <label class="control-label">Bắt đầu từ</label>
-                    @Html.Partial("SelectBeginTime", Model.SelectBegin)
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <div class="form-group col-md-6">
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại..." />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <input asp-for="FullName" class="form-control" placeholder="Họ và tên..." />
+                                </div>
+                            }
+                            else
+                            {
+                                <input type="hidden" asp-for="PhoneNumber" class="form-control" />
+                                <input type="hidden" asp-for="FullName" class="form-control" />
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary w-100">Submit</button>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <div id="endtime">
-                    <label class="control-label">kết thúc</label>
-                    @Html.Partial("SelectEndTime", Model.SelectEnd)
-                </div>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-    <div id="Fields" class="col-md-8">
-        <h2>Chọn sân</h2>
-        <div id="availableFields">
+</form>
+<div class="container">
+    <div id="Fields" class="row g-2">
+        <div id="availableFields" class="col-md-6">
+            <h2>Chọn sân</h2>
             @Html.Partial("AvailableField", Model.AvailableField)
         </div>
-        <h2>Đã chọn</h2>
-        <div id="selectedFields">
+
+        <div id="selectedFields" class="col-md-6">
+            <h2>Đã chọn</h2>
             @Html.Partial("SelectedField", Model.SelectedFields)
         </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

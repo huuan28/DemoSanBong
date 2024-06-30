@@ -1,6 +1,6 @@
 ﻿@model List<DateTime>
 
-<select id="SelectedDate" name="SelectedDate">
+<select id="SelectedDate" name="SelectedDate" class="form-select">
     @if (DateTime.Now.Hour < 21)
     {
         <option value="@Model[0].ToString("yyyy-MM-dd HH:mm")">Hôm nay - @Model[0].ToString("dd/MM/yyyy")</option>
