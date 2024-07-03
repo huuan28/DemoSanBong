@@ -1,1 +1,16 @@
-﻿<h2>Success</h2>
+﻿<link rel="stylesheet" href="~/css/PaymentSuccess.css">
+
+<div class="success-message">
+    <div class="close-button">
+        <button id="close-alert-button">X</button>
+    </div>
+    <h2>Đặt sân thành công!</h2>
+    <p>Cảm ơn bạn đã đặt sân với chúng tôi</p>
+</div>
+<script>
+    document.getElementById('close-alert-button').addEventListener('click', function () {
+            window.location.href = '/Home/Index';
+        });
+</script>
+
+
