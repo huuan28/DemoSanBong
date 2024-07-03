@@ -1,0 +1,157 @@
+﻿/*Field/Create*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    height: 100vh;
+}
+
+.booking-container {
+    display: flex;
+    width: 90%;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    gap: 0;
+}
+
+.booking-left {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+}
+
+
+.image-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+    .image-grid img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+    }
+
+.form-img {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .form-img img {
+        width: 100%;
+        height: 300px;
+    }
+
+.booking-right {
+    flex: 1;
+    padding: 20px;
+    background-color: #fefefe;
+}
+
+    .booking-right h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+        .booking-right h1 span {
+            color: #f6a23c;
+        }
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+    .form-group.full-width {
+        display: block;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 48%;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .form-group.full-width textarea {
+        width: 100%;
+    }
+
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    background-color: orange;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.form-group input,
+.form-group select {
+    width: calc(50% - 10px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.single-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .single-group select,
+    .single-group textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .single-group textarea {
+        resize: vertical;
+    }
+
+.form-group button {
+    padding: 15px;
+    background-color: #f6a23c;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+    .form-group button:hover {
+        background-color: #e5942b;
+    }
