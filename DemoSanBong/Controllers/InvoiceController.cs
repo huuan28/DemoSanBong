@@ -92,6 +92,8 @@ namespace DemoSanBong.Controllers
                 CashierId = cashier.Id,
                 VAT = 10
             };
+            booking.Status = 4;
+            _context.Update(booking);
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", new {id = invoice.Id});
