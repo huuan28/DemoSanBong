@@ -7,7 +7,8 @@
 
 <link rel="stylesheet" href="~/css/FieldCreate.css" />
 
-<div class="booking-container">
+<form asp-action="Create" asp-controller="Field" enctype="multipart/form-data" id="createForm" class="booking-container">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="booking-left">
         <div class="image-grid">
             <div class="form-img">
@@ -20,53 +21,46 @@
         </div>
     </div>
     <div class="booking-right">
-        <form action="#" method="post" class="booking-form">
-            <form asp-action="Create" asp-controller="Field" enctype="multipart/form-data" id="createForm">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-container">
-                    <h1>Book A <span>Field</span></h1>
-                    <div class="form-group">
-                        <label asp-for="Name" class="control-label"></label>
-                        <input type="text" asp-for="Name" class="form-control" placeholder="Mã sân" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="form-container">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
 
-                        <label asp-for="Type" class="control-label"></label>
-                        <input type="text" asp-for="Type" class="form-control" placeholder="Loại sân" />
-                        <span asp-validation-for="Type" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Price" class="control-label"></label>
-                        <input type="text" asp-for="Price" class="form-control" placeholder="Giá giờ" />
-                        <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group" >
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control"/>
+                <span asp-validation-for="Price" class="text-danger"></span>
 
-                        <label asp-for="PricePerMonth" class="control-label"></label>
-                        <input type="text" asp-for="PricePerMonth" class="form-control" placeholder="Giá tháng" />
-                        <span asp-validation-for="PricePerMonth" class="text-danger"></span>
-                    </div>
-                    <div class="form-group full-width">
-                        <label asp-for="Description" class="control-label"></label>
-                        <textarea asp-for="Description" class="form-control" placeholder="Mô tả sân"></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
-                    </div>
-                    <div class="form-group-other" style="margin-bottom: 15px">
-                        @* <input type="checkbox" name="your-status" value="TT"> *@
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" value="Create" class="btn btn-primary">BOOK NOW </button>
-                    </div>
-                    <div>
-                        <a asp-action="Index">Back to List</a>
-                    </div>
-                </div>
-            </form>
-        </form>
+                <label asp-for="PricePerMonth" class="control-label"></label>
+                <input asp-for="PricePerMonth" class="form-control" />
+                <span asp-validation-for="PricePerMonth" class="text-danger"></span>
+            </div>
+            <div class="form-group full-width">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control" ></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group-other" style="margin-bottom: 15px">
+                @* <input type="checkbox" name="your-status" value="TT"> *@
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsActive" /> kích hoạt ngay
+                </label>
+            </div>
+            <div class="form-group">
+                <button type="submit" value="Create" class="btn btn-primary">LƯU</button>
+            </div>
+
+        </div>
     </div>
+</form>
+<div>
+    <a class="text-warning" asp-action="Index">Quay lại</a>
 </div>
-
-
 
 @section Scripts {
     <script>

@@ -4,12 +4,11 @@
     ViewData["Title"] = "Index";
 }
 <link rel="stylesheet" href="~/css/Field.css" />
-
+<h1>Explore Our <span class="highlight">FIELDS</span></h1>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
 <div class="container">
-    <h1>Explore Our <span class="highlight">FIELDS</span></h1>
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
     <div class="room-grid">
         @foreach (var item in Model)
         {
@@ -24,9 +23,8 @@
                     <p>Trạng Thái: @Html.DisplayFor(modelItem => item.IsActive)</p>
 
                     <div class="actions">
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Booking" asp-controller="Booking" asp-route-id="@item.Id">Đặt ngay</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
                     </div>
                 </div>
             </div>
