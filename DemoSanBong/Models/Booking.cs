@@ -32,14 +32,8 @@ namespace DemoSanBong.Models
         //[ForeignKey("Customer")]
         public string? CusID { get; set; }
         public AppUser Customer { get; set; }
-
-
-
-
-
         public static readonly int RentByHour = 0;
         public static readonly int RentByMonth = 1;
-
         //status
         public static readonly int Deposited = 1;
         public static readonly int Changed = 2;
