@@ -1,0 +1,112 @@
+﻿@model DemoSanBong.ViewModels.BookingViewModel
+
+@{
+    ViewData["Title"] = "Check";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Status == 1 || Model.Status == 2)
+{
+    <a class="btn btn-success" asp-action="Checkin" asp-controller="Invoice" asp-route-id="@Model.Id">Lập phiếu nhận sân</a>
+}
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Mã đặt sân
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RentalType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckinDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckinDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CheckoutDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckoutDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Deposit)
+        </dt>
+        <dd class="col-sm-10">
+            @string.Format("{0:#,0} đ", Model.Deposit)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-10">
+            <p class="@Model.TextColor">@Model.State</p>
+        </dd>
+        <dt class="col-sm-2">
+            Tên khách hàng
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            SĐT
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Customer.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+
+<div id="Fields">
+    <h4>Danh sách sân đặt</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Tên sân
+                </th>
+                <th>
+                    Loại sân
+                </th>
+                <th>
+                    Giá đặt sân
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SelectedFields.SelectedFields)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @string.Format("{0:#,0}", item.Price)
+                        @if (Model.RentalType == 0)
+                        {
+                            @: đ/giờ
+                        }
+                        else
+                        {
+                            @: đ/Tháng
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

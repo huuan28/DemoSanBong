@@ -413,7 +413,8 @@ namespace DemoSanBong.Controllers
                 CheckoutDate = currentBooking.CheckoutDate,
                 Deposit = (double)currentBooking.Deposit,
                 CusID = user.Id,
-                Status = Models.Booking.Deposited
+                Status = Models.Booking.Deposited,
+                RentalType = currentBooking.RentalType
             };
             //lưu vào DB
             _context.Bookings.Add(booking);

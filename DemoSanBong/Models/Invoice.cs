@@ -7,25 +7,25 @@ namespace DemoSanBong.Models
         [Key, Display(Name = "Mã hóa đơn")]
         public int Id { get; set; }
 
-        [Required, Display(Name = "Ngày tạo")]
+        [Display(Name = "Ngày tạo")]
         public DateTime CreateDate { get; set; }
 
-        [Required, Display(Name = "Ngày nhận dự kiến")]
+        [Display(Name = "Ngày nhận")]
         public DateTime CheckinDate { get; set; }
 
-        [Required, Display(Name = "Ngày trả dự kiến")]
-        public DateTime CheckoutDate { get; set; }
+        [Display(Name = "Ngày trả")]
+        public DateTime? CheckoutDate { get; set; }
 
-        [Required, Display(Name = "Tổng cộng")]
+        [Display(Name = "Tổng cộng")]
         public double Amount { get; set; }
 
-        [Required, Display(Name = "Hình thức thanh toán")]
+        [Display(Name = "Hình thức thanh toán")]
         public int PaymentMethod { get; set; }
 
-        [Required, Display(Name = "Trạng thái")]
+        [Display(Name = "Trạng thái")]
         public int Status { get; set; }
 
-        [Required, Display(Name ="Mã đặt sân")]
+        [Display(Name ="Mã đặt sân")]
         public int BookingId { get; set; }
         public Booking Booking { get; set; }
 
@@ -34,7 +34,7 @@ namespace DemoSanBong.Models
         public AppUser Cashier { get; set; }
 
         public int VAT { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         public static readonly int CheckedIn = 0;
         public static readonly int CheckedOut = 1;

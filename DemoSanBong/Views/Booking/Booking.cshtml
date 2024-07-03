@@ -45,7 +45,7 @@
                             else
                             {
                                 <input type="hidden" asp-for="PhoneNumber" class="form-control" />
-                                <input type="hidden" asp-for="FullName" class="form-control" />
+                                <input type="hidden" type="hidden" asp-for="FullName" class="form-control" />
                             }
                         </div>
                     </div>
@@ -162,13 +162,12 @@
             function registerRentalTypeChange() {
                 $('select[name="RentalType"]').change(function () {
                     var rentalType = $(this).val();
-                    var start = $('#CheckinDate').val();
-                    var end = $('#CheckoutDate').val();
-
-                    if (rentalType == '1') { // Giá trị 1 tương ứng với "Thuê tháng"
-                        $('#begintime, #endtime').hide();
+                    if (rentalType == '1') {
+                        $('#begintime').css('visibility', 'hidden');
+                        $('#endtime').css('visibility', 'hidden');
                     } else {
-                        $('#begintime, #endtime').show();
+                        $('#begintime').css('visibility', 'visible');
+                        $('#endtime').css('visibility', 'visible');
                     }
 
                     // Gửi AJAX request để cập nhật nội dung của SelectedField

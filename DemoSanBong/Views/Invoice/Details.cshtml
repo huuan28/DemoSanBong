@@ -1,0 +1,174 @@
+﻿@model DemoSanBong.ViewModels.InvoiceViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Phiếu thuê sân [@Model.Id]</h3>
+<div>
+    <h4>Invoice</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Mã Phiếu
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            Khách hàng
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Booking.Customer.FullName
+        </dd>
+        <dt class="col-sm-2">
+            SĐT
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Booking.Customer.PhoneNumber
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian lập phiếu
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian nhận
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckinDate)
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian trả
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckoutDate)
+        </dd>
+        <dt class="col-sm-2">
+            Trạng thái
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
+            Mã đặt sân
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Booking.Id)
+        </dd>
+        <dt class="col-sm-2">
+            Nhân viên
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cashier.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            Ghi chú
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+    </dl>
+</div>
+<div id="Fields">
+    <h4>Sân thuê</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Tên sân
+                </th>
+                <th>
+                    Loại sân
+                </th>
+                <th>
+                    Giá đặt sân
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Fields)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @string.Format("{0:#,0}", item.Price)
+                        @if (Model.Booking.RentalType == 0)
+                        {
+                            @: đ/giờ
+                        }
+                        else
+                        {
+                            @: đ/Tháng
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div id="Services">
+    <h4>Sân thuê</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Mã dịch vụ
+                </th>
+                <th>
+                    Tên dịch vụ
+                </th>
+                <th>
+                    Loại dịch vụ
+                </th>
+                <th>
+                    Giá
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Services)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @*
+                    @string.Format("{0:#,0}", item.Price)
+                    @if (Model.Booking.RentalType == 0)
+                    {
+                    @: đ/giờ
+                    }
+                    else
+                    {
+                    @: đ/Tháng
+                    } *@
+                    </td>
+                    <td>
+                        <a class="btn btn-success" asp-action="AddService" asp-controller="Invoice" asp-route-id="@item.Id">Order</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Lập hóa đơn</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
