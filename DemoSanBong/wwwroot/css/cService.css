@@ -1,6 +1,6 @@
 ﻿.form-control::placeholder {
     color: #6c757d;
-    opacity: 1; /* Firefox */
+    opacity: 1;
 }
 
 .form-control:focus::placeholder {
@@ -92,8 +92,6 @@ a {
     a:hover {
         text-decoration: underline;
     }
-
-/* Media Queries for Responsive Design */
 
 @media (max-width: 768px) {
     .row {

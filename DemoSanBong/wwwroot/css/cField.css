@@ -6,7 +6,7 @@
     height: 100vh;
 }
 
-.booking-container {
+.field-container {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
@@ -17,13 +17,13 @@
     gap: 0;
 }
 
-.booking-left,
-.booking-right {
+.field-left,
+.field-right {
     flex: 1;
     padding: 20px;
 }
 
-.booking-left {
+.field-left {
     display: flex;
     flex-direction: column;
 }
@@ -33,12 +33,6 @@
     flex-direction: column;
     gap: 10px;
 }
-
-    .image-grid img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-    }
 
 .form-img {
     display: flex;
@@ -50,21 +44,6 @@
         width: 100%;
         height: 300px;
     }
-
-.booking-right h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-    .booking-right h1 span {
-        color: #f6a23c;
-    }
-
-.booking-form {
-    display: flex;
-    flex-direction: column;
-}
 
 .form-container {
     width: 100%;
@@ -83,7 +62,6 @@
     }
 
     .form-group input,
-    .form-group select,
     .form-group textarea {
         width: 48%;
         padding: 10px;
@@ -104,8 +82,7 @@ button {
     cursor: pointer;
 }
 
-.form-group input,
-.form-group select {
+.form-group input {
     width: calc(30% - 10px);
     padding: 10px;
     border: 1px solid #ddd;
@@ -114,30 +91,10 @@ button {
     box-sizing: border-box;
 }
 
-.booking-container label {
+.field-container label {
     display: inline-block;
     margin-top: 10px;
 }
-
-.single-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-    .single-group select,
-    .single-group textarea {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        box-sizing: border-box;
-        width: 100%;
-    }
-
-    .single-group textarea {
-        resize: vertical;
-    }
 
 .form-group button {
     padding: 15px;
@@ -154,20 +111,17 @@ button {
         background-color: #e5942b;
     }
 
-/* Responsive Design */
 @media (max-width: 768px) {
-    .booking-container {
+    .field-container {
         flex-direction: column;
     }
 
-    .form-group input,
-    .form-group select {
+    .form-group input {
         width: 100%;
         margin-bottom: 10px;
     }
 
     .form-group input,
-    .form-group select,
     .form-group textarea {
         width: 100%;
     }

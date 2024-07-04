@@ -3,17 +3,19 @@
 @{
     ViewData["Title"] = "Index";
 }
-<link rel="stylesheet" href="~/css/Field.css" />
+<link rel="stylesheet" href="~/css/iField.css"/>
+
 <h1>Explore Our <span class="highlight">FIELDS</span></h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <div class="container">
-    <div class="room-grid">
+    <p>
+        <a asp-action="Create" style="margin-left: 10px">Create New</a>
+    </p>
+    <div class="field-grid">
         @foreach (var item in Model)
         {
-            <div class="room-card">
-                <div class="room-info">
+            <div class="field-card">
+                <div class="field-info">
                     <img src="@item.DefaultImage" alt="@item.Name" />
                     <h2>Mã Sân: @Html.DisplayFor(modelItem => item.Name) </h2>
                     <p>Mô tả sân: @Html.DisplayFor(modelItem => item.Description) </p>
