@@ -1,8 +1,10 @@
 ﻿using DemoSanBong.Models;
 using DemoSanBong.ViewModels;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Data;
 
 namespace DemoSanBong.Controllers
@@ -11,6 +13,7 @@ namespace DemoSanBong.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly AppDbContext _context;
+        private InvoiceViewModel currentInvoice;
         public InvoiceController(UserManager<AppUser> userManager, AppDbContext context)
         {
             _userManager = userManager;
@@ -76,11 +79,11 @@ namespace DemoSanBong.Controllers
             return View(model);
         }
 
-        [Authorize(Roles ="Cashier")]
+        [Authorize(Roles = "Cashier")]
         public async Task<IActionResult> Checkin(int id)
         {
             var booking = _context.Bookings.Find(id);
-            if (booking == null)
+            if (booking == null || booking.Status == 3 || booking.Status == 4)
                 return NotFound();
             var cashier = await _userManager.GetUserAsync(HttpContext.User);
             var invoice = new Invoice
@@ -96,27 +99,19 @@ namespace DemoSanBong.Controllers
             _context.Update(booking);
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Details", new {id = invoice.Id});
+            return RedirectToAction("Details", new { id = invoice.Id });
         }
         public IActionResult Details(int id)
         {
             var inv = _context.Invoices.Find(id);
             if (inv == null)
                 return NotFound();
-            var model = new InvoiceViewModel
-            {
-                Id = inv.Id,
-                CreateDate = inv.CreateDate,
-                CheckinDate = inv.CheckinDate,
-                CheckoutDate = inv.CheckoutDate,
-                Note = inv.Note,
-                Status = inv.Status
-            };
-            model.Booking = _context.Bookings.Find(inv.BookingId);
-            model.Booking.Customer = _context.Users.Find(inv.Booking.CusID);
-            model.Cashier = _context.Users.FirstOrDefault(i => i.Id == inv.CashierId);
-            var bkDetail = _context.BookingDetails.Where(i=>i.BookingId == inv.BookingId).ToList();
-            model.Fields = new List<FieldViewModel>();
+            currentInvoice = GetInvoiceFromSession(id);
+            currentInvoice.Booking = _context.Bookings.Find(inv.BookingId);
+            currentInvoice.Booking.Customer = _context.Users.Find(inv.Booking.CusID);
+            currentInvoice.Cashier = _context.Users.FirstOrDefault(i => i.Id == inv.CashierId);
+            var bkDetail = _context.BookingDetails.Where(i => i.BookingId == inv.BookingId).ToList();
+            currentInvoice.Fields = new List<FieldViewModel>();
             foreach (var item in bkDetail)
             {
                 var field = _context.Fields.FirstOrDefault(i => i.Id == item.FieldId);
@@ -126,17 +121,16 @@ namespace DemoSanBong.Controllers
                     Type = field.Type,
                     Name = field.Name,
                 };
-                model.Fields.Add(new FieldViewModel
+                currentInvoice.Fields.Add(new FieldViewModel
                 {
                     Id = field.Id,
                     Type = field.Type,
                     Name = field.Name,
-                    Price = (model.Booking.RentalType == 0) ? field.GetPrice(_context, model.Booking.CreateDate) : field.GetPricePerMonth(_context, model.Booking.CreateDate)
+                    Price = (currentInvoice.Booking.RentalType == 0) ? field.GetPrice(_context, currentInvoice.Booking.CreateDate) : field.GetPricePerMonth(_context, currentInvoice.Booking.CreateDate)
                 });
             }
-            model.Services = _context.Services.ToList();
-            model.Order = new List<Service>();
-            return View(model);
+            SaveInvoiceToSession(currentInvoice);
+            return View(currentInvoice);
         }
         public IActionResult InvoiceList()
         {
@@ -146,6 +140,144 @@ namespace DemoSanBong.Controllers
         public IActionResult Checkout(int id)
         {
             return View();
+        }
+
+        /////////Sesstion
+        private InvoiceViewModel GetInvoiceFromSession(int id)
+        {
+            var InvoiceJson = HttpContext.Session.GetString("CurrentInvoice");
+            InvoiceViewModel model;
+            var inv = _context.Invoices.Find(id);
+            if (string.IsNullOrEmpty(InvoiceJson))
+            {
+                model = new InvoiceViewModel
+                {
+                    Id = id,
+                    CreateDate = inv.CreateDate,
+                    CheckinDate = inv.CheckinDate,
+                    CheckoutDate = inv.CheckoutDate,
+                    Note = inv.Note,
+                    Status = inv.Status
+                };
+                model.Order = _context.InvoiceServices.Where(i => i.InvoiceId == id).ToList();
+                foreach (var sv in model.Order)
+                {
+                    sv.Service = _context.Services.Find(sv.ServiceId);
+                }
+                model.Services = _context.Services.ToList();
+
+                return model;
+            }
+            model = JsonConvert.DeserializeObject<InvoiceViewModel>(InvoiceJson);
+            if (model.Id != id)
+            {
+                model = new InvoiceViewModel
+                {
+                    Id = id,
+                    CreateDate = inv.CreateDate,
+                    CheckinDate = inv.CheckinDate,
+                    CheckoutDate = inv.CheckoutDate,
+                    Note = inv.Note,
+                    Status = inv.Status
+                };
+                model.Order = _context.InvoiceServices.Where(i => i.InvoiceId == id).ToList();
+                foreach (var sv in model.Order)
+                {
+                    sv.Service = _context.Services.Find(sv.ServiceId);
+                }
+                model.Services = _context.Services.ToList();
+            }
+            return model;
+        }
+
+        //Lưu thông tin đặt sân vào session
+        private void SaveInvoiceToSession(InvoiceViewModel invoice)
+        {
+            var InvoiceJson = JsonConvert.SerializeObject(invoice);
+            HttpContext.Session.SetString("CurrentInvoice", InvoiceJson);
+        }
+        //Session////////
+        [HttpPost]
+        public IActionResult AddService(int ivId, int svId, int qty)
+        {
+            int q = qty == 0 ? 1 : qty;
+            currentInvoice = GetInvoiceFromSession(ivId);
+            var sv = _context.Services.Find(svId);
+            var invoiceSv = _context.InvoiceServices.FirstOrDefault(i => i.InvoiceId == ivId && i.ServiceId == svId);
+            if (invoiceSv == null)
+            {
+                invoiceSv = new InvoiceService
+                {
+                    InvoiceId = ivId,
+                    Invoice = _context.Invoices.Find(ivId),
+                    Service = sv,
+                    ServiceId = svId,
+                    Quantity = q,
+                    OrderDate = DateTime.Now,
+                };
+                _context.InvoiceServices.Add(invoiceSv);
+                _context.SaveChanges();
+                currentInvoice.Order.Add(invoiceSv);
+            }
+            else
+            {
+                invoiceSv.Quantity += q;
+                _context.InvoiceServices.Update(invoiceSv);
+                _context.SaveChanges();
+                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
+                currentInvoice.Order.Remove(ivsv);
+                currentInvoice.Order.Add(invoiceSv);
+            }
+            SaveInvoiceToSession(currentInvoice);
+            return PartialView("_SelectedServices", currentInvoice.Order);
+        }
+        public IActionResult IncreaseService(int ivId, int svId)
+        {
+            currentInvoice = GetInvoiceFromSession(ivId);
+            var invoiceSv = _context.InvoiceServices.FirstOrDefault(i => i.InvoiceId == ivId && i.ServiceId == svId);
+
+            if (invoiceSv != null)
+            {
+                invoiceSv.Quantity += 1;
+                invoiceSv.Service = _context.Services.Find(invoiceSv.ServiceId);
+                _context.InvoiceServices.Update(invoiceSv);
+                _context.SaveChanges();
+                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
+                currentInvoice.Order.Remove(ivsv);
+                currentInvoice.Order.Add(invoiceSv);
+                currentInvoice.Order = currentInvoice.Order.OrderBy(i => i.ServiceId).ToList();
+            }
+
+            SaveInvoiceToSession(currentInvoice);
+            return PartialView("_SelectedServices", currentInvoice.Order);
+        }
+
+        public IActionResult DecreaseService(int ivId, int svId)
+        {
+            currentInvoice = GetInvoiceFromSession(ivId);
+            var invoiceSv = _context.InvoiceServices.FirstOrDefault(i => i.InvoiceId == ivId && i.ServiceId == svId);
+
+            if (invoiceSv != null && invoiceSv.Quantity > 1)
+            {
+                invoiceSv.Quantity -= 1;
+                invoiceSv.Service = _context.Services.Find(invoiceSv.ServiceId);
+                _context.InvoiceServices.Update(invoiceSv);
+                _context.SaveChanges();
+                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
+                currentInvoice.Order.Remove(ivsv);
+                currentInvoice.Order.Add(invoiceSv);
+                currentInvoice.Order = currentInvoice.Order.OrderBy(i => i.ServiceId).ToList();
+            }
+            else if (invoiceSv != null && invoiceSv.Quantity == 1)
+            {
+                _context.InvoiceServices.Remove(invoiceSv);
+                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
+                currentInvoice.Order.Remove(ivsv);
+                _context.SaveChanges();
+            }
+
+            SaveInvoiceToSession(currentInvoice);
+            return PartialView("_SelectedServices", currentInvoice.Order);
         }
     }
 }

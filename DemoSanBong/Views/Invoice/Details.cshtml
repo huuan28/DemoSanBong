@@ -3,10 +3,15 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var rs = Model;
 }
 
 <h3>Phiếu thuê sân [@Model.Id]</h3>
 <div>
+    <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Thanh toán</a>
+    <a asp-action="Index">Quay lại danh sách Phiếu</a>
+</div>
+<div id="invoices">
     <h4>Invoice</h4>
     <hr />
     <dl class="row">
@@ -114,10 +119,8 @@
         </tbody>
     </table>
 </div>
-
-
 <div id="Services">
-    <h4>Sân thuê</h4>
+    <h4>Order</h4>
     <table class="table">
         <thead>
             <tr>
@@ -132,6 +135,9 @@
                 </th>
                 <th>
                     Giá
+                </th>
+                <th>
+                    Hiện có
                 </th>
             </tr>
         </thead>
@@ -149,26 +155,88 @@
                         @Html.DisplayFor(modelItem => item.Type)
                     </td>
                     <td>
-                        @*
-                    @string.Format("{0:#,0}", item.Price)
-                    @if (Model.Booking.RentalType == 0)
-                    {
-                    @: đ/giờ
-                    }
-                    else
-                    {
-                    @: đ/Tháng
-                    } *@
+                        @Html.DisplayFor(modelItem => item.Quantity)
                     </td>
+
                     <td>
-                        <a class="btn btn-success" asp-action="AddService" asp-controller="Invoice" asp-route-id="@item.Id">Order</a>
+                    <th>
+                        Giá
+                    </th>
+                    <td>
+                        <input type="number" name="qty" id="sv-@item.Id" min="1" value="1" />
+                        <button class="btn btn-success order-service" data-svid="@item.Id" data-ivid="@Model.Id">Order</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-<div>
-    <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Lập hóa đơn</a> |
-    <a asp-action="Index">Back to List</a>
+<div id="SelectedService">
+    @Html.Partial("_SelectedServices", Model.Order)
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".order-service").on("click", function () {
+                var svId = $(this).data("svid");
+                var ivId = $(this).data("ivid");
+                var qty = $('#sv-' + svId).val();
+
+                $.ajax({
+                    url: '@Url.Action("AddService", "Invoice")',
+                    type: 'POST',
+                    data: { svId: svId, ivId: ivId, qty: qty },
+                    success: function (result) {
+                        $('#SelectedService').html(result);
+                        $('#sv-' + svId).val(1); // Reset input value to 1
+                        registerServiceButtons(); // Re-register event handlers
+                    },
+                    error: function (error) {
+                        console.error('Error adding service:', error);
+                    }
+                });
+            });
+
+            function registerServiceButtons() {
+                $(".increase-service").on("click", function () {
+                    var svId = $(this).data("svid");
+                    var ivId = $(this).data("ivid");
+
+                    $.ajax({
+                        url: '@Url.Action("IncreaseService", "Invoice")',
+                        type: 'POST',
+                        data: { svId: svId, ivId: ivId },
+                        success: function (result) {
+                            $('#SelectedService').html(result);
+                            registerServiceButtons(); // Re-register event handlers
+                        },
+                        error: function (error) {
+                            console.error('Error increasing service:', error);
+                        }
+                    });
+                });
+
+                $(".decrease-service").on("click", function () {
+                    var svId = $(this).data("svid");
+                    var ivId = $(this).data("ivid");
+
+                    $.ajax({
+                        url: '@Url.Action("DecreaseService", "Invoice")',
+                        type: 'POST',
+                        data: { svId: svId, ivId: ivId },
+                        success: function (result) {
+                            $('#SelectedService').html(result);
+                            registerServiceButtons(); // Re-register event handlers
+                        },
+                        error: function (error) {
+                            console.error('Error decreasing service:', error);
+                        }
+                    });
+                });
+            }
+
+            registerServiceButtons(); // Initial registration
+        });
+    </script>
+}

@@ -39,7 +39,7 @@ namespace DemoSanBong.Controllers
 
 
         //kiểm tra sân trống
-        public bool isAvailable(int roomId, DateTime startDate, DateTime endDate)
+        private bool IsAvailable(int roomId, DateTime startDate, DateTime endDate)
         {
             //tìm lịch đặt sân có cùng thời gian chọn
             var bookings = _context.Bookings
@@ -67,7 +67,7 @@ namespace DemoSanBong.Controllers
             currentBooking.AvailableField.Clear();
             foreach (var field in fields)
             {
-                if (isAvailable(field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
+                if (IsAvailable(field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
                 {
                     currentBooking.AvailableField.Add(
                     new FieldViewModel
@@ -91,7 +91,7 @@ namespace DemoSanBong.Controllers
             var begin = time.SelectBegin(time.GetDays().FirstOrDefault()).FirstOrDefault();
             foreach (var field in fields)
             {
-                if (isAvailable(field.Id, begin, begin.AddHours(1)))
+                if (IsAvailable(field.Id, begin, begin.AddHours(1)))
                 {
                     list.Add(
                     new FieldViewModel
@@ -116,7 +116,7 @@ namespace DemoSanBong.Controllers
             // Lặp qua các mục và thêm các mục không hợp lệ vào danh sách tạm thời
             foreach (var field in currentBooking.SelectedFields.SelectedFields)
             {
-                if (!isAvailable((int)field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
+                if (!IsAvailable((int)field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
                 {
                     fieldsToRemove.Add(field);
                 }

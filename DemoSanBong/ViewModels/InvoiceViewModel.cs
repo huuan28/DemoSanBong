@@ -37,6 +37,6 @@ namespace DemoSanBong.ViewModels
 
         public List<Service>? Services { get; set; }
 
-        public List<Service>? Order {  get; set; }
+        public List<InvoiceService>? Order {  get; set; }
     }
 }

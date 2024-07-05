@@ -1,0 +1,29 @@
+﻿@model IEnumerable<DemoSanBong.Models.InvoiceService>
+<h4>Order</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã dịch vụ</th>
+            <th>Tên dịch vụ</th>
+            <th>Loại dịch vụ</th>
+            @* <th>Giá</th> *@
+            <th>Số lượng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Service.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Service.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Service.Type)</td>
+                @* <td>@string.Format("{0:#,0}", item.Service.Price)</td> *@
+                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>
+                    <button class="btn btn-danger decrease-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">Decrease</button>
+                    <button class="btn btn-success increase-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">Increase</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
