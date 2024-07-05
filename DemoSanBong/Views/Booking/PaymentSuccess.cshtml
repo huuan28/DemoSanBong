@@ -1,17 +1,31 @@
-﻿<link rel="stylesheet" href="~/css/sPayment.css">
+@* <<<<<<< HEAD *@
+﻿
+<link rel="stylesheet" href="~/css/sPayment.css">
 
 <div id="alert-box" class="success-message">
     <div class="close-button">
         <button id="close-alert-button">X</button>
     </div>
     <h2>Đặt sân thành công!</h2>
-    <p>Cảm ơn bạn đã đặt sân với chúng tôi</p>
-    <div id="countdown-timer" class="countdown-t">10</div>
+    <p>Kiểm tra lại thông tin hoặc kết nối mạng của bạn</p>
+    <div id="countdown-timer" class="countdown-t">5</div>
+    @* @* ======= *@
+    ﻿<link rel="stylesheet" href="~/css/PaymentSuccess.css">
+
+    @* <div class="success-message">
+    <div class="close-button">
+    <button id="close-alert-button">X</button>
+    </div>
+    <h2>Đặt sân thất bại</h2>
+    <p>Vui lòng kiểm tra lại thông tin</p> *@
+
+    @* >>>>>>> d40d50fc8f3fd526100fef841272c5246de6bef4 *@
 </div>
 <script>
     document.getElementById('close-alert-button').addEventListener('click', function () {
-            window.location.href = '/Home/Index';
-        });
+        window.location.href = '/Home/Index';
+    });
+    // <<<<<<< HEAD
 
     function startCountdown(duration, display) {
         var timer = duration, seconds;
@@ -29,9 +43,11 @@
 
     window.onload = function () {
         var countdownDisplay = document.getElementById('countdown-timer');
-        var countdownTime = 10;
+        var countdownTime = 5;
         countdownDisplay.textContent = countdownTime;
         document.getElementById('alert-box').style.display = 'block';
         startCountdown(countdownTime, countdownDisplay);
     };
+    // =======
+    // >>>>>>> d40d50fc8f3fd526100fef841272c5246de6bef4
 </script>
