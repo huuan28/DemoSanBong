@@ -1,17 +1,14 @@
-﻿/*Field/Create*/
-body {
+﻿body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: center;*/
     height: 100vh;
 }
 
-.booking-container {
+.field-container {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -20,26 +17,22 @@ body {
     gap: 0;
 }
 
-.booking-left {
+.field-left,
+.field-right {
     flex: 1;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    /*justify-content: center;*/
 }
 
+.field-left {
+    display: flex;
+    flex-direction: column;
+}
 
 .image-grid {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
-    .image-grid img {
-        width: 100%;
-        height: auto;
-        border-radius: 8px;
-    }
 
 .form-img {
     display: flex;
@@ -51,27 +44,6 @@ body {
         width: 100%;
         height: 300px;
     }
-
-.booking-right {
-    flex: 1;
-    padding: 20px;
-    background-color: #fefefe;
-}
-
-    .booking-right h1 {
-        font-size: 24px;
-        margin-bottom: 20px;
-        color: #333;
-    }
-
-        .booking-right h1 span {
-            color: #f6a23c;
-        }
-
-.booking-form {
-    display: flex;
-    flex-direction: column;
-}
 
 .form-container {
     width: 100%;
@@ -90,7 +62,6 @@ body {
     }
 
     .form-group input,
-    .form-group select,
     .form-group textarea {
         width: 48%;
         padding: 10px;
@@ -111,9 +82,8 @@ button {
     cursor: pointer;
 }
 
-.form-group input,
-.form-group select {
-    width: calc(50% - 10px);
+.form-group input {
+    width: calc(30% - 10px);
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -121,25 +91,10 @@ button {
     box-sizing: border-box;
 }
 
-.single-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
+.field-container label {
+    display: inline-block;
+    margin-top: 10px;
 }
-
-    .single-group select,
-    .single-group textarea {
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
-        box-sizing: border-box;
-        width: 100%;
-    }
-
-    .single-group textarea {
-        resize: vertical;
-    }
 
 .form-group button {
     padding: 15px;
@@ -155,3 +110,23 @@ button {
     .form-group button:hover {
         background-color: #e5942b;
     }
+
+@media (max-width: 768px) {
+    .field-container {
+        flex-direction: column;
+    }
+
+    .form-group input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+    }
+
+    .form-group.full-width textarea {
+        width: 100%;
+    }
+}

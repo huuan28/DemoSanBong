@@ -1,1 +1,37 @@
-﻿<h2>Thất bại</h2>
+﻿<link rel="stylesheet" href="~/css/sPayment.css">
+
+<div id="alert-box" class="success-message">
+    <div class="close-button">
+        <button id="close-alert-button">X</button>
+    </div>
+    <h2>Đặt sân không thành công!</h2>
+    <p>Kiểm tra lại thông tin hoặc kết nối mạng của bạn</p>
+    <div id="countdown-timer" class="countdown-t">10</div>
+</div>
+<script>
+    document.getElementById('close-alert-button').addEventListener('click', function () {
+        window.location.href = '/Home/Index';
+    });
+
+    function startCountdown(duration, display) {
+        var timer = duration, seconds;
+        var countdownInterval = setInterval(function () {
+            seconds = parseInt(timer % 60, 10);
+
+            display.textContent = seconds;
+
+            if (--timer < 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/Home/Index';
+            }
+        }, 1000);
+    }
+
+    window.onload = function () {
+        var countdownDisplay = document.getElementById('countdown-timer');
+        var countdownTime = 10;
+        countdownDisplay.textContent = countdownTime;
+        document.getElementById('alert-box').style.display = 'block';
+        startCountdown(countdownTime, countdownDisplay);
+    };
+</script>

@@ -5,19 +5,20 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/Service.css" />
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<link  rel="stylesheet" href="~/css/iService.css" />
 
 <div class="container">
     <h1>Explore Our <span class="highlight">SERVICES</span></h1>
-    <div class="room-grid">
+
+    <p>
+        <a asp-action="Create" style="margin-left: 10px">Create New</a>
+    </p>
+
+    <div class="service-grid">
         @foreach (var item in Model)
         {
-            <div class="room-card">
-                <div class="room-info">
+            <div class="service-card">
+                <div class="service-info">
                     <h2>Tên dịch vụ: @Html.DisplayFor(modelItem => item.Name)</h2>
                     <p>Loại dịch vụ: @Html.DisplayFor(modelItem => item.Type)</p>
                     <p>Đơn vị: @Html.DisplayFor(modelItem => item.Unit)</p>

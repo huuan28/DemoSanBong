@@ -5,11 +5,13 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/FieldCreate.css" />
+<link rel="stylesheet" href="~/css/cField.css"/>
 
-<form asp-action="Create" asp-controller="Field" enctype="multipart/form-data" id="createForm" class="booking-container">
+<h1 style="text-align: center; margin-bottom: 20px;">Explore Our <span class="highlight" style="color: #ffb400;">CREATE FIELD</span></h1>
+
+<form asp-action="Create" asp-controller="Field" enctype="multipart/form-data" id="createForm" class="field-container">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="booking-left">
+    <div class="field-left">
         <div class="image-grid">
             <div class="form-img">
                 <label asp-for="DefaultImage">Upload Image</label>
@@ -20,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="booking-right">
+    <div class="field-right">
         <div class="form-container">
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -46,9 +48,8 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group-other" style="margin-bottom: 15px">
-                @* <input type="checkbox" name="your-status" value="TT"> *@
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsActive" /> kích hoạt ngay
+                    <input class="form-check-input" asp-for="IsActive" /> Kích hoạt ngay
                 </label>
             </div>
             <div class="form-group">
@@ -56,11 +57,12 @@
             </div>
 
         </div>
+
+        <div>
+            <a class="text-warning" asp-action="Index" style="padding-left: 35px;">Quay lại</a>
+        </div>
     </div>
 </form>
-<div>
-    <a class="text-warning" asp-action="Index">Quay lại</a>
-</div>
 
 @section Scripts {
     <script>
