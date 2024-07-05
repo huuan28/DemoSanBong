@@ -59,12 +59,12 @@
 </form>
 <div class="container">
     <div id="Fields" class="row g-2">
-        <div id="availableFields" class="col-md-6">
+        <div id="availableFields" class="col-md-8">
             <h2>Chọn sân</h2>
             @Html.Partial("AvailableField", Model.AvailableField)
         </div>
 
-        <div id="selectedFields" class="col-md-6">
+        <div id="selectedFields" class="col-md-4">
             <h2>Đã chọn</h2>
             @Html.Partial("SelectedField", Model.SelectedFields)
         </div>
