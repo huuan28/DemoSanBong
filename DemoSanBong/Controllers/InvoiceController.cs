@@ -163,8 +163,13 @@ namespace DemoSanBong.Controllers
                 foreach (var sv in model.Order)
                 {
                     sv.Service = _context.Services.Find(sv.ServiceId);
+                    sv.Service.SetCurrPrice(_context);
                 }
                 model.Services = _context.Services.ToList();
+                foreach(var sv in model.Services)
+                {
+                    sv.SetCurrPrice(_context);
+                }
 
                 return model;
             }
@@ -184,8 +189,13 @@ namespace DemoSanBong.Controllers
                 foreach (var sv in model.Order)
                 {
                     sv.Service = _context.Services.Find(sv.ServiceId);
+                    sv.Service.SetCurrPrice(_context);
                 }
                 model.Services = _context.Services.ToList();
+                foreach (var sv in model.Services)
+                {
+                    sv.SetCurrPrice(_context);
+                }
             }
             return model;
         }
@@ -215,6 +225,7 @@ namespace DemoSanBong.Controllers
                     Quantity = q,
                     OrderDate = DateTime.Now,
                 };
+                invoiceSv.Service.SetCurrPrice(_context);
                 _context.InvoiceServices.Add(invoiceSv);
                 _context.SaveChanges();
                 currentInvoice.Order.Add(invoiceSv);
@@ -239,15 +250,17 @@ namespace DemoSanBong.Controllers
             if (invoiceSv != null)
             {
                 invoiceSv.Quantity += 1;
-                invoiceSv.Service = _context.Services.Find(invoiceSv.ServiceId);
                 _context.InvoiceServices.Update(invoiceSv);
                 _context.SaveChanges();
-                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
-                currentInvoice.Order.Remove(ivsv);
-                currentInvoice.Order.Add(invoiceSv);
-                currentInvoice.Order = currentInvoice.Order.OrderBy(i => i.ServiceId).ToList();
-            }
 
+                var hdht = currentInvoice.Order.FirstOrDefault(i=>i.InvoiceId==ivId&&i.ServiceId == svId);
+                hdht.Quantity += 1;
+                hdht.Service.SetCurrPrice(_context);
+            }
+            foreach (var ivsv in currentInvoice.Order)
+            {
+                ivsv.Service.SetCurrPrice(_context);
+            }
             SaveInvoiceToSession(currentInvoice);
             return PartialView("_SelectedServices", currentInvoice.Order);
         }
@@ -260,13 +273,11 @@ namespace DemoSanBong.Controllers
             if (invoiceSv != null && invoiceSv.Quantity > 1)
             {
                 invoiceSv.Quantity -= 1;
-                invoiceSv.Service = _context.Services.Find(invoiceSv.ServiceId);
                 _context.InvoiceServices.Update(invoiceSv);
                 _context.SaveChanges();
-                var ivsv = currentInvoice.Order.FirstOrDefault(i => i.ServiceId == svId);
-                currentInvoice.Order.Remove(ivsv);
-                currentInvoice.Order.Add(invoiceSv);
-                currentInvoice.Order = currentInvoice.Order.OrderBy(i => i.ServiceId).ToList();
+                var hdht = currentInvoice.Order.FirstOrDefault(i => i.InvoiceId == ivId && i.ServiceId == svId);
+                hdht.Quantity -= 1;
+                hdht.Service.SetCurrPrice(_context);
             }
             else if (invoiceSv != null && invoiceSv.Quantity == 1)
             {
@@ -275,7 +286,10 @@ namespace DemoSanBong.Controllers
                 currentInvoice.Order.Remove(ivsv);
                 _context.SaveChanges();
             }
-
+            foreach(var ivsv in currentInvoice.Order)
+            {
+                ivsv.Service.SetCurrPrice(_context);
+            }
             SaveInvoiceToSession(currentInvoice);
             return PartialView("_SelectedServices", currentInvoice.Order);
         }

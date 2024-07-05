@@ -1,4 +1,6 @@
-﻿namespace DemoSanBong.Models
+﻿using NuGet.Protocol;
+
+namespace DemoSanBong.Models
 {
     public class InvoiceService
     {

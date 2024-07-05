@@ -21,6 +21,15 @@ namespace DemoSanBong.Models
         public DateTime CreateDate { get; set; }
         public string? ImagePath { get; set; }
 
+        private double currPrice;
+
+        public void SetCurrPrice(AppDbContext context)
+        {
+            var f = context.ServiceRates.Where(i => i.ServiceId == Id && i.EffectiveDate < DateTime.Now).OrderByDescending(i => i.EffectiveDate).FirstOrDefault();
+            if (f == null) currPrice= 0;
+            currPrice= f.Price;
+        }
+        public double GetCurrPrice() { return currPrice; }
         public double getCurrentPrice(AppDbContext context) //Lấy giá giờ hiện tại
         {
             var f = context.ServiceRates.Where(i => i.ServiceId == Id && i.EffectiveDate < DateTime.Now).OrderByDescending(i => i.EffectiveDate).FirstOrDefault();
