@@ -2,17 +2,17 @@
 
 @{
     ViewData["Title"] = "InvoiceList";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
 <h1>InvoiceList</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                Mã đơn
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreateDate)
             </th>
@@ -29,61 +29,47 @@
                 @Html.DisplayNameFor(model => model.PaymentMethod)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Booking)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Cashier)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.VAT)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckinDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckoutDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentMethod)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Booking.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cashier.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VAT)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note)
-            </td>
-            <td>
-               @*  <a asp-action="Checkout" asp-route-id="@item.Id">Update</a> | *@
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckinDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckoutDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PaymentMethod)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Booking.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cashier.FullName)
+                </td>
+                <td>
+                    @*  <a asp-action="Checkout" asp-route-id="@item.Id">Update</a> | *@
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

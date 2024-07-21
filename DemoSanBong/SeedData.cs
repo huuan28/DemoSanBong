@@ -32,15 +32,17 @@ namespace DemoSanBong
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, "Admin");
+                    await userManager.AddToRoleAsync(admin, "Cashier");
                 }
             }
 
             // Danh sách các khách hàng cần thêm
             var customers = new List<AppUser>
             {
-                 new AppUser { UserName = "huuan",FullName = "An", Email = "nghuuan2803@gmail.com", PhoneNumber = "0909090909" },
+                 new AppUser { UserName = "huuan",FullName = "An", Email = "nghuuan2803@gmail.com", PhoneNumber = "0933912012" },
                  new AppUser { UserName = "anhhao",FullName = "Hào", Email = "customer2@example.com", PhoneNumber = "0303030303" },
                  new AppUser { UserName = "hien",FullName = "Hiền", Email = "customer3@example.com", PhoneNumber = "0123012345" },
+                 new AppUser { UserName = "qmanh",FullName = "Mạnh", Email = "customer4@example.com", PhoneNumber = "0123012355" },
              };
             var password = "123123";
 
@@ -76,18 +78,26 @@ namespace DemoSanBong
             if (!context.Fields.Any())
             {
                 context.Fields.AddRange(
-                   new Field { Name = "Sân 1", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 2", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 3", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 4", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 5", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 6", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 7", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 8", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 9", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 10", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 11", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
-                   new Field { Name = "Sân 12", Type = "trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" }
+                   new Field { Name = "S501", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S502", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S503", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S504", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S505", Type = "5 người", Description = "Sân cho 5 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S701", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S702", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S703", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S704", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S705", Type = "7 người", Description = "Sân cho 7 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S901", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S902", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S903", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S904", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "S905", Type = "9 người", Description = "Sân cho 9 người", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "SK01", Type = "Trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "SK02", Type = "Trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "SK03", Type = "Trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "SK04", Type = "Trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" },
+                   new Field { Name = "SK05", Type = "Trẻ em", Description = "Sân cho trẻ em", IsActive = true, ImagePath = "Images/" }
                     );
                 await context.SaveChangesAsync();
 
@@ -133,103 +143,203 @@ namespace DemoSanBong
                     (
                     new Service
                     {
-                        Name = "Sting",
-                        Description = "Description for service 1",
-                        Type = "DoAn",
+                        Name = "Sting dâu",
+                        Description = "Sting dâu",
+                        Type = "Nước",
                         Unit = "chai",
                         Quantity = 10,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image1.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 2",
+                        Name = "Sting vàng",
                         Description = "Description for service 2",
-                        Type = "Type B",
-                        Unit = "lon",
+                        Type = "Nước",
+                        Unit = "chai",
                         Quantity = 20,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image2.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 3",
+                        Name = "7UP chanh",
                         Description = "Description for service 3",
-                        Type = "Type C",
+                        Type = "Nước",
                         Unit = "lon",
                         Quantity = 30,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image3.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 4",
+                        Name = "Bò húc Thái",
                         Description = "Description for service 4",
-                        Type = "Type D",
+                        Type = "Nước",
                         Unit = "lon",
                         Quantity = 40,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image4.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 5",
+                        Name = "Number1 vàng",
                         Description = "Description for service 5",
-                        Type = "Type E",
-                        Unit = "lon",
+                        Type = "Nước",
+                        Unit = "chai",
                         Quantity = 50,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image5.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 6",
+                        Name = "Sữa đậu nành Number1",
                         Description = "Description for service 6",
-                        Type = "Type F",
-                        Unit = "lon",
+                        Type = "Nước",
+                        Unit = "chai",
                         Quantity = 60,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image6.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 7",
+                        Name = "Boncha mật ong",
                         Description = "Description for service 7",
-                        Type = "Type G",
-                        Unit = "lon",
+                        Type = "Nước",
+                        Unit = "chai",
                         Quantity = 70,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image7.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 8",
+                        Name = "Boncha việt quất",
                         Description = "Description for service 8",
-                        Type = "Type H",
-                        Unit = "lon",
+                        Type = "Nước",
+                        Unit = "chai",
                         Quantity = 80,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image8.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 9",
+                        Name = "Bánh mì ngọt",
                         Description = "Description for service 9",
-                        Type = "Type I",
-                        Unit = "lon",
+                        Type = "Đồ ăn",
+                        Unit = "bịch",
                         Quantity = 90,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image9.jpg"
+                        
                     },
                     new Service
                     {
-                        Name = "Service 10",
+                        Name = "Bánh mì heo quay",
                         Description = "Description for service 10",
-                        Type = "Type J",
-                        Unit = "lon",
+                        Type = "Đồ ăn",
+                        Unit = "ổ",
                         Quantity = 100,
                         CreateDate = DateTime.Now,
-                        ImagePath = "path/to/image10.jpg"
+                       
+                    },
+                    new Service
+                    {
+                        Name = "Bánh mì heo quay",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "ổ",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Bánh mì trứng ốp la",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "ổ",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Bánh mì chả cá",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "ổ",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Cơm chiên gà",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "đĩa",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                       
+                    },
+                    new Service
+                    {
+                        Name = "Cơm chiên dương châu",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "đĩa",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Cơm chiên bò xào",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "đĩa",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Cơm tấm sườn",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "đĩa",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Cơm tấm sườn - bì - chả - trứng",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "đĩa",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Phở bò",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "tô",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
+                    },
+                    new Service
+                    {
+                        Name = "Bún bò",
+                        Description = "Description for service 10",
+                        Type = "Đồ ăn",
+                        Unit = "tô",
+                        Quantity = 100,
+                        CreateDate = DateTime.Now,
+                        
                     }
                 );
                 await context.SaveChangesAsync();

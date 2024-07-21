@@ -359,7 +359,7 @@ namespace DemoSanBong.Controllers
                     FullName = model.FullName,
                     BookingId = new Random().Next(1, 1000)
                 };
-                return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
+                return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel, "-"));
             }
             return RedirectToAction("Booking");
         }

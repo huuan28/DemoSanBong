@@ -16,17 +16,28 @@
         {
             <div class="field-card">
                 <div class="field-info">
-                    <img src="@item.DefaultImage" alt="@item.Name" />
+                    @if(item.Type=="5 người")
+                    {
+                        
+                        <img src="~/Images/2nd.jpg" alt="@item.Name" />
+                    }
+                    else if(item.Type=="7 người")
+                    {
+                        <img src="~/Images/3th.jpg" alt="@item.Name" />
+                    }
+                    else
+                    {
+                        <img src="~/Images/default.jpg" alt="@item.Name" />
+                    }
                     <h2>Mã Sân: @Html.DisplayFor(modelItem => item.Name) </h2>
                     <p>Mô tả sân: @Html.DisplayFor(modelItem => item.Description) </p>
                     <p>Loại sân: @Html.DisplayFor(modelItem => item.Type)</p>
-                    <p>Giá Giờ: @Html.DisplayFor(modelItem => item.Price) </p>
-                    <p>Giá Tháng:  @Html.DisplayFor(modelItem => item.PricePerMonth) </p>
-                    <p>Trạng Thái: @Html.DisplayFor(modelItem => item.IsActive)</p>
-
+                    <p>Giá Giờ: @string.Format("{0:#,0} đ",item.Price) </p>
+                    <p>Giá Tháng:  @string.Format("{0:#,0} đ", item.PricePerMonth) </p>
+                    
                     <div class="actions">
-                        <a asp-action="Booking" asp-controller="Booking" asp-route-id="@item.Id">Đặt ngay</a>
-                        <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                        <a asp-action="Booking" asp-controller="Booking" asp-route-id="@item.Id">Đặt ngay</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
                     </div>
                 </div>
             </div>

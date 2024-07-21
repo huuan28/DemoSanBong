@@ -11,12 +11,12 @@ namespace DemoSanBong.Services
         {
             _config = config;
         }
-        public string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model)
+        public string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model, string? url)
         {
             var tick = DateTime.Now.Ticks.ToString();
             var vnpay = new VnPayLibrary();
             vnpay.AddRequestData("vnp_Version", _config["VnPay:Version"]);
-            vnpay.AddRequestData("vnp_Command", _config["VnPay:Version"]);
+            vnpay.AddRequestData("vnp_Command", _config["VnPay:Command"]);
             vnpay.AddRequestData("vnp_TmnCode", _config["VnPay:TmnCode"]);
             vnpay.AddRequestData("vnp_Amount", (model.Amount * 100).ToString());
             vnpay.AddRequestData("vnp_CreateDate", model.CreateDate.ToString("yyyyMMddHHmmss"));
@@ -25,8 +25,11 @@ namespace DemoSanBong.Services
             vnpay.AddRequestData("vnp_Locale", _config["VnPay:Locale"]);
             vnpay.AddRequestData("vnp_OrderInfo", "Thanh toán cho đơn đặt phòng: " + model.BookingId);
             vnpay.AddRequestData("vnp_OrderType", "other");
-            vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:PaymentBackReturnUrl"]);
             vnpay.AddRequestData("vnp_TxnRef", tick);
+            if (url == "")
+                vnpay.AddRequestData("vnp_ReturnUrl", "http://localhost:5289/Invoice/PaymentCallBack");
+            else
+                vnpay.AddRequestData("vnp_ReturnUrl", _config["VnPay:PaymentBackReturnUrl"]);
             var paymentUrl = vnpay.CreateRequestUrl(_config["VnPay:BaseUrl"], _config["VnPay:HashSecret"]);
             return paymentUrl;
 

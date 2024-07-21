@@ -2,17 +2,45 @@
 
 @{
     ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Admin.cshtml";
     var rs = Model;
+    string masage = ViewBag.Message;
+}
+@if (!string.IsNullOrEmpty(masage))
+{
+    if (masage == "Thanh toán thành công")
+    {
+        <div id="statusAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div id="statusAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
+@if (Model.Status == 1)
+{
+    <h3>Phiếu thuê sân [@Model.Id]</h3>
+}
+else if (Model.Status == 2)
+{
+    <h3>Hóa đơn thanh toán [@Model.Id]</h3>
 }
 
-<h3>Phiếu thuê sân [@Model.Id]</h3>
-<div>
-    <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Thanh toán</a>
-    <a asp-action="Index">Quay lại danh sách Phiếu</a>
-</div>
+@if (Model.Status == 1)
+{
+
+    <div>
+        <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Thanh toán</a>
+        @*  <a asp-action="Index">Quay lại danh sách Phiếu</a> *@
+    </div>
+}
 <div id="invoices">
-    <h4>Invoice</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -78,7 +106,7 @@
     </dl>
 </div>
 <div id="Fields">
-    <h4>Sân thuê</h4>
+    <h4>Sân sử dụng</h4>
     <table class="table">
         <thead>
             <tr>
@@ -119,7 +147,13 @@
         </tbody>
     </table>
 </div>
+@if (Model.Status != 2)
+{
     <button class="btn btn-success" id="btnOrder">Thêm dịch vụ</button>
+    <div id="SelectedService">
+        @Html.Partial("_SelectedServices", Model.Order)
+    </div>
+}
 <div id="Services" style="display:none">
     <h4>Order</h4>
     <table class="table">
@@ -170,9 +204,7 @@
         </tbody>
     </table>
 </div>
-<div id="SelectedService">
-    @Html.Partial("_SelectedServices", Model.Order)
-</div>
+
 
 @section Scripts {
     <script>
@@ -239,6 +271,20 @@
             }
 
             registerServiceButtons(); // Initial registration
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            setTimeout(function () {
+                var alertElement = document.getElementById('statusAlert');
+                if (alertElement) {
+                    alertElement.classList.remove('show');
+                    alertElement.classList.add('fade');
+                    setTimeout(() => {
+                        alertElement.remove();
+                    }, 150);
+                }
+            }, 5000);
         });
     </script>
 }

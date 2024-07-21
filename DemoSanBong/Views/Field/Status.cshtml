@@ -1,0 +1,23 @@
+﻿@model IEnumerable<DemoSanBong.ViewModels.FieldView>
+
+@{
+    ViewData["Title"] = "Status";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<h1 style="text-align:center">Tình trạng sân</h1>
+
+<div class="container">
+    <div class="row">
+
+        @foreach (var item in Model)
+        {
+            <div class="col-2" style="border:1px solid black;border-radius:10px;margin-top:2px;">
+                @Html.DisplayFor(modelItem => item.Field.Name)
+                <p>Trống</p>
+                <br/>
+                <a asp-action="Details" asp-route-id="@item.Field.Id">Check</a>
+            </div>
+        }
+    </div>
+</div>

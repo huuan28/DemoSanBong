@@ -230,7 +230,16 @@
                                 </div>
                                 <a href="contact.html" class="nav-item nav-link">Liên hệ</a>
                             </div>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Cashier"))
+                            {
+                                <a asp-action="Status" asp-controller="Field" class="btn btn-success rounded-0 py-4 px-md-5 d-none d-lg-block">Quản lý!<i class="fa fa-arrow-right ms-3"></i></a>
+
+                            }
+                            else
+                            {
+                                
                             <a asp-action="Booking" asp-controller="Booking" class="btn btn-success rounded-0 py-4 px-md-5 d-none d-lg-block">Đặt ngay!<i class="fa fa-arrow-right ms-3"></i></a>
+                            }
                         </div>
                     </nav>
                 </div>

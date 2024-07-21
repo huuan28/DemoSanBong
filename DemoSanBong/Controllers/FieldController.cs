@@ -171,5 +171,23 @@ namespace DemoSanBong.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Detail", new { id = model.Id });
         }
+
+
+
+        [Authorize(Roles ="Cashier")]
+        public IActionResult Status()
+        {
+            var fields = _context.Fields.ToList();
+            var models = new List<FieldView>();
+            foreach (var field in fields)
+            {
+                var model = new FieldView
+                {
+                    Field = field
+                };
+                models.Add(model);
+            }
+            return View(models);
+        }
     }
 }

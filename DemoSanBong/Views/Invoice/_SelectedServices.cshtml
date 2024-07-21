@@ -1,4 +1,7 @@
 ﻿@model IEnumerable<DemoSanBong.Models.InvoiceService>
+@{
+    double total = 0;
+}
 <h4>Dịch vụ sử dụng</h4>
 <table class="table">
     <thead>
@@ -8,22 +11,34 @@
             <th>Loại dịch vụ</th>
             <th>Giá</th>
             <th>Số lượng</th>
+            <th>Thành tiền</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            total += item.Quantity * item.Service.GetCurrPrice();
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Service.Id)</td>
                 <td>@Html.DisplayFor(modelItem => item.Service.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.Service.Type)</td>
-                <td>@string.Format("{0:#,0}", item.Service.GetCurrPrice())
+                <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice())
                 <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice()*item.Quantity)</td>
                 <td>
                     <button class="btn btn-danger decrease-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">-</button>
                     <button class="btn btn-success increase-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">+</button>
                 </td>
             </tr>
         }
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th>Tổng cộng</th>
+            <th>@string.Format("{0:#,0}đ", total)</th>
+
+        </tr>
     </tbody>
 </table>

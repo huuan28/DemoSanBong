@@ -2,17 +2,13 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
 <link rel="stylesheet" href="~/css/Invoice.css"/>
 
 <div class="container">
     <h1>Danh sách <span class="highlight">Đặt sân</span></h1>
-
-    <p>
-        <a asp-action="Create" style="margin-left: 10px">Create New</a>
-    </p>
 
     <div class="invoice-grid">
         @foreach (var item in Model)

@@ -13,9 +13,6 @@
                 Giá
             </th>
             <th>
-                Giá thuê tháng
-            </th>
-            <th>
         </tr>
     </thead>
     <tbody>
@@ -25,17 +22,21 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                <td>
-                    @string.Format("{0:#,0}", item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PricePerMonth)
-                </td>
+                @if (Model.RentalType == 0)
+                {
+                    <td>
+                        @string.Format("{0:#,0} đ", item.Price)
+                    </td>
+                }
+                else
+                {
+
+                    <td>
+                        @string.Format("{0:#,0} đ", item.PricePerMonth)
+                    </td>
+                }
                 <td>
                     <button class="removeRoomButton btn btn-danger" data-room-id="@item.Id">Hủy</button>
-                </td>
-                <td>
-                    <a asp-action="Details" asp-controller="Room" target="_blank" asp-route-id="@item.Id">Chi tiết</a>
                 </td>
             </tr>
             @if (Model.RentalType == 0)
@@ -49,5 +50,5 @@
         }
     </tbody>
     <p>Thành tiền: @string.Format("{0:#,0}đ", amount)</p>
-    <p>Đặt cọc: @string.Format("{0:#,0}đ", amount*0.2)</p>
+    <p>Đặt cọc: @string.Format("{0:#,0}đ", amount * 0.2)</p>
 </table>

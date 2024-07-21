@@ -1,0 +1,114 @@
+﻿@model DemoSanBong.ViewModels.InvoiceViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<h1>Thông tin hóa đơn</h1>
+<p>Mã số: @Model.Id</p>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Mã đặt sân
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Booking.Id)
+        </dd>
+        <dt class="col-sm-2">
+            Khách hàng
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Booking.Customer.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            Số điện thoại
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Booking.Customer.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            Ngày tạo
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CreateDate)
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian nhận
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckinDate)
+        </dd>
+        <dt class="col-sm-2">
+            Thời gian trả
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CheckoutDate)
+        </dd>
+        <dt class="col-sm-2">
+            Tổng thanh toán
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Amount)
+        </dd>
+        <dt class="col-sm-2">
+            Hình thức thanh toán
+        </dt>
+        <dd class="col-sm-10">
+            <input type="radio" name="PaymentMethod" value="0" checked> Tiền mặt<br>
+            <input type="radio" name="PaymentMethod" value="1"> VnPay<br>
+            <input type="radio" name="PaymentMethod" value="2"> Momo<br>
+        </dd>
+        <dt class="col-sm-2">
+            Trạng thái hóa đơn
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-2">
+            Nhân viên
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Cashier.FullName)
+        </dd>
+        <dt class="col-sm-2">
+            Ghi chú
+        </dt>
+        <dd class="col-sm-10">
+            <input name="Note" id="Note" placeholder="..." />
+        </dd>
+    </dl>
+</div>
+<div>
+    <a class="btn btn-danger" asp-action="Details" asp-route-id="@Model.Id">Hủy</a>
+    <button type="button" id="submitCheckout" class="btn btn-primary">Xác nhận</button>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#submitCheckout').on('click', function () {
+                console.log('error')
+                var id = '@Model.Id';
+                var note = $('#Note').val();
+                var paymentMethod = $('input[name="PaymentMethod"]:checked').val();
+
+                $.ajax({
+                    url: '@Url.Action("Checkout", "Invoice")',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        pm: paymentMethod,
+                        note: note
+                    },
+                    success: function (result) {
+                        window.location.href = result.redirectUrl;
+                    },
+                    error: function (error) {
+                        console.error('Error during checkout:', error);
+                    }
+                });
+            });
+        });
+    </script>
+

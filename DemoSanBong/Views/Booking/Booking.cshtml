@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary w-100">Submit</button>
+                        <button onclick="return confirm('Cần đặt cọc để hoàn tất')" class="btn btn-primary w-100">Đặt</button>
                     </div>
                 </div>
             </div>
@@ -196,32 +196,6 @@
             registerUpdateDay();
             registerUpdateTime();
             registerRentalTypeChange()
-            // $('#CheckinDate').change(function () {
-            //     var start = $(this).val();
-            //     var end = $('#CheckoutDate').val();
-
-            //     $.ajax({
-            //         url: '@Url.Action("UpdateTime", "Booking")',
-            //         type: 'POST',
-            //         data: { start: start, end: end },
-            //         success: function (result) {
-            //             var selectEnd = $('#CheckoutDate');
-
-            //             // Cập nhật các option của selectEnd
-            //             selectEnd.empty();
-            //             $.each(result.SelectEnd, function (index, value) {
-            //                 selectEnd.append('<option value="' + value + '">' + new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</option>');
-            //             });
-
-            //             // Cập nhật danh sách sân trống
-            //             $('#availableFields').html(result.AvailableFieldHtml); // assuming result contains HTML of available fields
-            //         },
-            //         error: function (error) {
-            //             console.error('Error updating time:', error);
-            //         }
-            //     });
-            // });
-
 
         });
     </script>
