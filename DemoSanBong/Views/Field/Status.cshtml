@@ -4,20 +4,66 @@
     ViewData["Title"] = "Status";
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+    }
 
+    .item-container {
+        position: relative;
+    }
+
+    .image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .box {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+    }
+
+    .img {
+        width: 100%;
+        height: auto;
+    }
+
+    .my-div {
+        color: #ffff
+    }
+</style>
 <h1 style="text-align:center">Tình trạng sân</h1>
 
 <div class="container">
     <div class="row">
-
         @foreach (var item in Model)
         {
-            <div class="col-2" style="border:1px solid black;border-radius:10px;margin-top:2px;">
-                @Html.DisplayFor(modelItem => item.Field.Name)
-                <p>Trống</p>
-                <br/>
-                <a asp-action="Details" asp-route-id="@item.Field.Id">Check</a>
+            <div class="col-4 col-md-3 col-lg-3 item-container" style="padding: 20px">
+                <div class="image-container card">
+                     <img class="img-fluid" src="~/Images/FieldImages/00000000-0000-0000-0000-000000000000-3th.jpg" alt="">
+                    <div class=" box btn btn-success" style="margin:5px;">
+                        Trong
+                    </div>
+                    <div class="text-center my-div" style="background: orangered">
+                        <h4>@Html.DisplayFor(modelItem => item.Field.Name)</h4>                       
+                    </div>
+                </div>
             </div>
+
+       @*      <div class="col-6 col-md-3 mb-4" style="border-top-left-radius: 15px; border-top-right-radius: 15px; ">
+                <div class="card text-center bg-success" style="border-radius: 15px;">
+                    <p style="padding-top: 10px">@Html.DisplayFor(modelItem => item.Field.Name)</p>                    
+                    <p>Trống</p>
+                    <br />
+                    <a asp-action="Details" asp-route-id="@item.Field.Id">Check</a>
+                </div>
+            </div> *@
         }
     </div>
 </div>
