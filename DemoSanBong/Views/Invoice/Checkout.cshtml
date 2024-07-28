@@ -5,84 +5,69 @@
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
 
-<h1>Thông tin hóa đơn</h1>
-<p>Mã số: @Model.Id</p>
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Mã đặt sân
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Booking.Id)
-        </dd>
-        <dt class="col-sm-2">
-            Khách hàng
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Booking.Customer.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            Số điện thoại
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Booking.Customer.PhoneNumber)
-        </dd>
-        <dt class="col-sm-2">
-            Ngày tạo
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreateDate)
-        </dd>
-        <dt class="col-sm-2">
-            Thời gian nhận
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckinDate)
-        </dd>
-        <dt class="col-sm-2">
-            Thời gian trả
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckoutDate)
-        </dd>
-        <dt class="col-sm-2">
-            Tổng thanh toán
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class="col-sm-2">
-            Hình thức thanh toán
-        </dt>
-        <dd class="col-sm-10">
-            <input type="radio" name="PaymentMethod" value="0" checked> Tiền mặt<br>
-            <input type="radio" name="PaymentMethod" value="1"> VnPay<br>
-            <input type="radio" name="PaymentMethod" value="2"> Momo<br>
-        </dd>
-        <dt class="col-sm-2">
-            Trạng thái hóa đơn
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class="col-sm-2">
-            Nhân viên
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Cashier.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            Ghi chú
-        </dt>
-        <dd class="col-sm-10">
-            <input name="Note" id="Note" placeholder="..." />
-        </dd>
-    </dl>
-</div>
-<div>
-    <a class="btn btn-danger" asp-action="Details" asp-route-id="@Model.Id">Hủy</a>
-    <button type="button" id="submitCheckout" class="btn btn-primary">Xác nhận</button>
+<div class="container-fluid px-5 mt-4">
+    <div class="card shadow-sm border-primary">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Thông tin hóa đơn</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead mb-4">Mã số: <span class="font-weight-bold text-primary">@Model.Id</span></p>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4 font-weight-bold">Mã đặt sân</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Id)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Khách hàng</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Customer.FullName)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Số điện thoại</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Customer.PhoneNumber)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Ngày tạo</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CreateDate)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Thời gian nhận</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CheckinDate)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Thời gian trả</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CheckoutDate)</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4 font-weight-bold">Tổng thanh toán</dt>
+                        <dd class="col-sm-8">@string.Format("{0:#,0} đ", Model.Amount)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Hình thức thanh toán</dt>
+                        <dd class="col-sm-8">
+                            <div class="form-check">
+                                <input type="radio" name="PaymentMethod" value="0" id="paymentCash" checked class="form-check-input">
+                                <label class="form-check-label" for="paymentCash">Tiền mặt</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" name="PaymentMethod" value="1" id="paymentVnPay" class="form-check-input">
+                                <label class="form-check-label" for="paymentVnPay">VnPay</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" name="PaymentMethod" value="2" id="paymentMomo" class="form-check-input">
+                                <label class="form-check-label" for="paymentMomo">Momo</label>
+                            </div>
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">Trạng thái hóa đơn</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge Trạng thái hóa đơn">@Model.Status</span>
+                        </dd>
+                        <dt class="col-sm-4 font-weight-bold">Nhân viên</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Cashier.FullName)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Ghi chú</dt>
+                        <dd class="col-sm-8">
+                            <input name="Note" id="Note" placeholder="Nhập ghi chú..." class="form-control">
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a class="btn btn-danger" asp-action="Details" asp-route-id="@Model.Id">Hủy</a>
+                <button type="button" id="submitCheckout" class="btn btn-primary">Xác nhận</button>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
