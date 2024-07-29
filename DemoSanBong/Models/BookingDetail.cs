@@ -11,5 +11,8 @@ namespace DemoSanBong.Models
         public int FieldId { get; set; }
         public Field Field { get; set; }
 
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
     }
 }

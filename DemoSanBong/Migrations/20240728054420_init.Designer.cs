@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoSanBong.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240702165810_alterInvoice")]
-    partial class alterInvoice
+    [Migration("20240728054420_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.25")
+                .HasAnnotation("ProductVersion", "6.0.32")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -148,10 +148,10 @@ namespace DemoSanBong.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CheckinDate")
+                    b.Property<DateTime?>("CheckinDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CheckoutDate")
+                    b.Property<DateTime?>("CheckoutDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreateDate")
@@ -163,7 +163,7 @@ namespace DemoSanBong.Migrations
                     b.Property<double>("Deposit")
                         .HasColumnType("float");
 
-                    b.Property<int>("PaymentMethod")
+                    b.Property<int>("PaymentGate")
                         .HasColumnType("int");
 
                     b.Property<int>("RentalType")
@@ -186,6 +186,12 @@ namespace DemoSanBong.Migrations
 
                     b.Property<int>("FieldId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("BookingId", "FieldId");
 
@@ -399,7 +405,7 @@ namespace DemoSanBong.Migrations
                     b.ToTable("InvoiceServices");
                 });
 
-            modelBuilder.Entity("DemoSanBong.Models.Rules", b =>
+            modelBuilder.Entity("DemoSanBong.Models.Parameter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -418,7 +424,7 @@ namespace DemoSanBong.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Rules");
+                    b.ToTable("Parameters");
                 });
 
             modelBuilder.Entity("DemoSanBong.Models.Service", b =>

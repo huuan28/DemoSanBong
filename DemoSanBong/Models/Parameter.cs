@@ -2,7 +2,7 @@
 
 namespace DemoSanBong.Models
 {
-    public class Rules
+    public class Parameter
     {
         [Key]
         public int Id { get; set; }

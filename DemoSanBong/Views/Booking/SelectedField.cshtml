@@ -1,8 +1,5 @@
 ﻿@model DemoSanBong.ViewModels.SelectedFieldsViewModel
-@{
-    double amount = 0;
-    double deposit = 0;
-}
+
 <table class="table">
     <thead>
         <tr>
@@ -13,6 +10,12 @@
                 Giá
             </th>
             <th>
+                Bắt đầu
+            </th>
+            <th>
+                Kết thúc
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -36,19 +39,17 @@
                     </td>
                 }
                 <td>
-                    <button class="removeRoomButton btn btn-danger" data-room-id="@item.Id">Hủy</button>
+                    @item.Start
+                </td>
+                <td>
+                    @item.End
+                </td>
+                <td>
+                    <button class="removeRoomButton btn btn-danger" data-room-id="@item.Id">X</button>
                 </td>
             </tr>
-            @if (Model.RentalType == 0)
-            {
-                amount += item.Price;
-            }
-            else
-            {
-                amount += item.PricePerMonth;
-            }
         }
     </tbody>
-    <p>Thành tiền: @string.Format("{0:#,0}đ", amount)</p>
-    <p>Đặt cọc: @string.Format("{0:#,0}đ", amount * 0.2)</p>
+    <p>Thành tiền: @string.Format("{0:#,0}đ", Model.Amount)</p>
+    <p>Đặt cọc: @string.Format("{0:#,0}đ", Model.Deposit)</p>
 </table>

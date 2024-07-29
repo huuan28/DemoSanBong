@@ -1,5 +1,6 @@
 ﻿using DemoSanBong.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using System.ComponentModel.DataAnnotations;
 
 namespace DemoSanBong.ViewModels
@@ -35,6 +36,8 @@ namespace DemoSanBong.ViewModels
         public List<DateTime>? SelectEnd { get; set; }
 
         public AppUser? Customer { get; set; }
+
+        public int? MonthNum { get; set; }
 
         public string? Type
         {

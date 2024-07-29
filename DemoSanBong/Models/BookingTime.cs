@@ -44,7 +44,7 @@
             list.Add(DateTime.Today.AddDays(2));
             return list;
         }
-        public BookingTime(Rules rules)
+        public BookingTime(Parameter rules)
         {
             open = rules.OpenTime;
 

@@ -28,6 +28,9 @@ namespace DemoSanBong.ViewModels
         [Display(Name = "Ảnh mặc định")]
         public string? DefaultImage { get; set; }
 
+        public DateTime? Start { get; set; }
+        public DateTime? End { get; set; }
+
         private List<string> images;
 
         public void SetImages(List<string> images)

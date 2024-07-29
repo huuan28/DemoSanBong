@@ -41,6 +41,21 @@ namespace DemoSanBong.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Parameters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DepositPercent = table.Column<int>(type: "int", nullable: false),
+                    OpenTime = table.Column<int>(type: "int", nullable: false),
+                    CloseTime = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parameters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
                 {
@@ -52,21 +67,6 @@ namespace DemoSanBong.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Rules",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DepositPercent = table.Column<int>(type: "int", nullable: false),
-                    OpenTime = table.Column<int>(type: "int", nullable: false),
-                    CloseTime = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rules", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,9 +215,9 @@ namespace DemoSanBong.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RentalType = table.Column<int>(type: "int", nullable: false),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckoutDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    CheckinDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CheckoutDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PaymentGate = table.Column<int>(type: "int", nullable: false),
                     Deposit = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CusID = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -366,7 +366,9 @@ namespace DemoSanBong.Migrations
                 columns: table => new
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false),
-                    FieldId = table.Column<int>(type: "int", nullable: false)
+                    FieldId = table.Column<int>(type: "int", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -393,14 +395,14 @@ namespace DemoSanBong.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CheckinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CheckoutDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CheckoutDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Amount = table.Column<double>(type: "float", nullable: false),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: false),
                     CashierId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     VAT = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -571,10 +573,10 @@ namespace DemoSanBong.Migrations
                 name: "InvoiceServices");
 
             migrationBuilder.DropTable(
-                name: "RoleClaims");
+                name: "Parameters");
 
             migrationBuilder.DropTable(
-                name: "Rules");
+                name: "RoleClaims");
 
             migrationBuilder.DropTable(
                 name: "ServiceRates");

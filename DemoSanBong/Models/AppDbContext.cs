@@ -29,7 +29,7 @@ namespace DemoSanBong.Models
         public DbSet<GuestBill> GuestBills { get; set; }
         public DbSet<BillDetail> BillDetails { get; set; }
         
-        public DbSet<Rules> Rules { get; set; }
+        public DbSet<Parameter> Parameters { get; set; }
 
 
 

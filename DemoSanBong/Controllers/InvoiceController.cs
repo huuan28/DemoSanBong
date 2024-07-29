@@ -33,8 +33,8 @@ namespace DemoSanBong.Controllers
                 models.Add(new BookingViewModel
                 {
                     Id = (int)booking.Id,
-                    CheckinDate = booking.CheckinDate,
-                    CheckoutDate = booking.CheckoutDate,
+                    CheckinDate = (DateTime)booking.CheckinDate,
+                    CheckoutDate = (DateTime)booking.CheckoutDate,
                     Deposit = booking.Deposit,
                     Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
                     RentalType = booking.RentalType,
@@ -51,8 +51,8 @@ namespace DemoSanBong.Controllers
             var model = new BookingViewModel
             {
                 Id = (int)booking.Id,
-                CheckinDate = booking.CheckinDate,
-                CheckoutDate = booking.CheckoutDate,
+                CheckinDate = (DateTime)booking.CheckinDate,
+                CheckoutDate = (DateTime)booking.CheckoutDate,
                 Deposit = booking.Deposit,
                 Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
                 RentalType = booking.RentalType,
@@ -94,7 +94,7 @@ namespace DemoSanBong.Controllers
             {
                 BookingId = booking.Id,
                 CreateDate = DateTime.Now,
-                CheckinDate = booking.CheckinDate,
+                CheckinDate = (DateTime)booking.CheckinDate,
                 CheckoutDate = booking.CheckoutDate,
                 CashierId = cashier.Id,
                 VAT = 10

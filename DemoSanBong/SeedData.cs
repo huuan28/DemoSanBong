@@ -357,9 +357,9 @@ namespace DemoSanBong
             #endregion
 
             //Set rules
-            if (!context.Rules.Any())
+            if (!context.Parameters.Any())
             {
-                context.Rules.Add(new Rules
+                context.Parameters.Add(new Parameter
                 {
                     OpenTime = 7,
                     CloseTime = 22,
@@ -369,54 +369,54 @@ namespace DemoSanBong
                 Console.WriteLine("Set Rules Successed");
             }
 
-            if (!context.Bookings.Any(i=> i.CreateDate.Date == DateTime.Today))
-            {
+            //if (!context.Bookings.Any(i=> i.CreateDate.Date == DateTime.Today))
+            //{
 
-                var bookings = new List<Booking>
-            {
-                new Booking
-                {
-                    CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
-                    CheckinDate = DateTime.Today.AddHours(7),
-                    CheckoutDate = DateTime.Today.AddHours(22),
-                    CreateDate = DateTime.Now,
-                    PaymentMethod = 1,
-                    Status = 1,
-                    RentalType = 0,
-                    Deposit = 0
-                },
-                new Booking
-                {
-                    CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
-                    CheckinDate = DateTime.Today.AddHours(9).AddDays(1),
-                    CheckoutDate = DateTime.Today.AddHours(21).AddDays(1),
-                    CreateDate = DateTime.Now.AddDays(1),
-                    PaymentMethod = 1,
-                    Status = 1,
-                    RentalType = 0,
-                    Deposit = 0
-                },
-            };
-                context.Bookings.AddRange(bookings);
-                await context.SaveChangesAsync();
+            //    var bookings = new List<Booking>
+            //{
+            //    new Booking
+            //    {
+            //        CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
+            //        CheckinDate = DateTime.Today.AddHours(7),
+            //        CheckoutDate = DateTime.Today.AddHours(22),
+            //        CreateDate = DateTime.Now,
+            //        PaymentGate = 1,
+            //        Status = 1,
+            //        RentalType = 0,
+            //        Deposit = 0
+            //    },
+            //    new Booking
+            //    {
+            //        CusID = context.Users.Where(i=> i.FullName=="An").FirstOrDefault().Id,
+            //        CheckinDate = DateTime.Today.AddHours(9).AddDays(1),
+            //        CheckoutDate = DateTime.Today.AddHours(21).AddDays(1),
+            //        CreateDate = DateTime.Now.AddDays(1),
+            //        PaymentGate = 1,
+            //        Status = 1,
+            //        RentalType = 0,
+            //        Deposit = 0
+            //    },
+            //};
+            //    context.Bookings.AddRange(bookings);
+            //    await context.SaveChangesAsync();
 
-                foreach (var booking in bookings)
-                {
-                    var detail1 = new BookingDetail
-                    {
-                        BookingId = booking.Id,
-                        FieldId = 3
-                    };
-                    var detail2 = new BookingDetail
-                    {
-                        BookingId = booking.Id,
-                        FieldId = 4
-                    };
-                    context.BookingDetails.Add(detail1);
-                    context.BookingDetails.Add(detail2);
-                }
-                await context.SaveChangesAsync();
-            }
+            //    foreach (var booking in bookings)
+            //    {
+            //        var detail1 = new BookingDetail
+            //        {
+            //            BookingId = booking.Id,
+            //            FieldId = 3
+            //        };
+            //        var detail2 = new BookingDetail
+            //        {
+            //            BookingId = booking.Id,
+            //            FieldId = 4
+            //        };
+            //        context.BookingDetails.Add(detail1);
+            //        context.BookingDetails.Add(detail2);
+            //    }
+            //    await context.SaveChangesAsync();
+            //}
         }
     }
 }

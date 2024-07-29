@@ -32,21 +32,28 @@
                             <div class="col-md-3" id="endtime">
                                 @Html.Partial("SelectEndTime", Model.SelectEnd)
                             </div>
-
-                            @if (!User.Identity.IsAuthenticated)
-                            {
-                                <div class="form-group col-md-6">
-                                    <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại..." />
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <input asp-for="FullName" class="form-control" placeholder="Họ và tên..." />
-                                </div>
-                            }
-                            else
-                            {
-                                <input type="hidden" asp-for="PhoneNumber" class="form-control" />
-                                <input type="hidden" type="hidden" asp-for="FullName" class="form-control" />
-                            }
+                            <div class="col-md-6" id="monthnum" style="display:none">
+                                <select id="MonthNum" name="MonthNum" class="form-select">
+                                    <option value="1">1 tháng</option>
+                                    <option value="2">2 tháng</option>
+                                    <option value="3">3 tháng</option>
+                                    <option value="4">4 tháng</option>
+                                    <option value="5">5 tháng</option>
+                                    <option value="6">6 tháng</option>
+                                    <option value="7">7 tháng</option>
+                                    <option value="8">8 tháng</option>
+                                    <option value="9">9 tháng</option>
+                                    <option value="10">10 tháng</option>
+                                    <option value="11">11 tháng</option>
+                                    <option value="12">12 tháng</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Số điện thoại..." />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input asp-for="FullName" class="form-control" placeholder="Họ và tên..." />
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -59,12 +66,12 @@
 </form>
 <div class="container">
     <div id="Fields" class="row g-2">
-        <div id="availableFields" class="col-md-8">
+        <div id="availableFields" class="col-md-7">
             <h2>Chọn sân</h2>
             @Html.Partial("AvailableField", Model.AvailableField)
         </div>
 
-        <div id="selectedFields" class="col-md-4">
+        <div id="selectedFields" class="col-md-5">
             <h2>Đã chọn</h2>
             @Html.Partial("SelectedField", Model.SelectedFields)
         </div>
@@ -162,40 +169,64 @@
             function registerRentalTypeChange() {
                 $('select[name="RentalType"]').change(function () {
                     var rentalType = $(this).val();
+                    var begintime = document.getElementById("begintime");
+                    var endtime = document.getElementById("endtime");
+                    var monthnum = document.getElementById("monthnum");
+
                     if (rentalType == '1') {
-                        $('#begintime').css('visibility', 'hidden');
-                        $('#endtime').css('visibility', 'hidden');
+                        monthnum.style.display = 'block';
+                        begintime.style.display = 'none';
+                        endtime.style.display = 'none';
                     } else {
-                        $('#begintime').css('visibility', 'visible');
-                        $('#endtime').css('visibility', 'visible');
+                        monthnum.style.display = 'none';
+                        begintime.style.display = 'block';
+                        endtime.style.display = 'block';
                     }
 
                     // Gửi AJAX request để cập nhật nội dung của SelectedField
                     $.ajax({
                         url: '@Url.Action("UpdateRentalType", "Booking")',
                         type: 'POST',
-                        data: { rentalType: rentalType, start: start, end: end },
+                        // data: { rentalType: rentalType, start: start, end: end },
+                        data: { rentalType: rentalType },
                         success: function (result) {
                             $('#selectedFields').html(result);
                             registerRemoveRoomButtons();
+                            registerMonthChange();
                         },
                         error: function (error) {
                             console.error('Error updating rental type:', error);
                         }
                     });
                 });
-
-                // Kiểm tra giá trị khi trang được tải lần đầu
-                if ($('select[name="RentalType"]').val() == '1') {
-                    $('#begintime, #endtime').hide();
-                }
             }
+            function registerMonthChange() {
+                $('#MonthNum').change(function () {
+                    var num = $('#MonthNum').val();
+                    console.log('ok');
 
+                    // Gửi AJAX request để cập nhật nội dung của SelectedField
+                    $.ajax({
+                        url: '@Url.Action("UpdateMonthNum", "Booking")',
+                        type: 'POST',
+                        data: { MonthNum: num },
+                        success: function (result) {
+                            $('#selectedFields').html(result);
+                            // registerRemoveRoomButtons();
+                        },
+                        error: function (error) {
+                            console.error('Error updating rental type:', error);
+                        }
+                    });
+                });
+            }
+            registerMonthChange();
             registerAddRoomButtons();
             registerRemoveRoomButtons();
             registerUpdateDay();
             registerUpdateTime();
-            registerRentalTypeChange()
+            registerRentalTypeChange();
+            registerMonthChange();
 
         });
     </script>
