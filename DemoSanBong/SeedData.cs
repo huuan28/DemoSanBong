@@ -135,6 +135,7 @@ namespace DemoSanBong
                 }
                 await context.SaveChangesAsync();
             }
+            
             #endregion
             #region seeding service
             if (!context.Services.Any())

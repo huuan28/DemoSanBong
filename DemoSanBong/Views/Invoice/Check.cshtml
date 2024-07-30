@@ -4,69 +4,125 @@
     ViewData["Title"] = "Check";
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
-
+<style>
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+    }
+</style>
 @if (Model.Status == 1 || Model.Status == 2)
 {
     <a class="btn btn-success" asp-action="Checkin" asp-controller="Invoice" asp-route-id="@Model.Id">Lập phiếu nhận sân</a>
 }
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Mã đặt sân
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.RentalType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckinDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckinDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckoutDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckoutDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Deposit)
-        </dt>
-        <dd class="col-sm-10">
-            @string.Format("{0:#,0} đ", Model.Deposit)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class="col-sm-10">
-            <p class="@Model.TextColor">@Model.State</p>
-        </dd>
-        <dt class="col-sm-2">
-            Tên khách hàng
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            SĐT
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Customer.PhoneNumber)
-        </dd>
-    </dl>
+<div class="container-fluid px-5 mt-4">
+    <div class="card shadow-sm border-primary">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Thông tin đặt sân</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-6 font-weight-bold">
+                            Mã đặt sân
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.Id)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.RentalType)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.Type)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.CheckinDate)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.CheckinDate)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.CheckoutDate)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.CheckoutDate)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-6 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.Deposit)
+                        </dt>
+                        <dd class="col-sm-6">
+                            @string.Format("{0:#,0} đ", Model.Deposit)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            @Html.DisplayNameFor(model => model.Status)
+                        </dt>
+                        <dd class="col-sm-6">
+                            <span class="@Model.TextColor font-weight-bold">@Model.State</span>
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            Tên khách hàng
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.Customer.FullName)
+                        </dd>
+                        <dt class="col-sm-6 font-weight-bold">
+                            SĐT
+                        </dt>
+                        <dd class="col-sm-6">
+                            @Html.DisplayFor(model => model.Customer.PhoneNumber)
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Fields" class="container-fluid px-5 mt-4">
+    <div class="card shadow-sm border-primary">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Danh sách sân đặt</h5>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead class="bg-light text-primary">
+                    <tr>
+                        <th>Tên sân</th>
+                        <th>Loại sân</th>
+                        <th>Giá đặt sân</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SelectedFields.SelectedFields)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                            <td>
+                                @string.Format("{0:#,0}", item.Price)
+                                @if (Model.RentalType == 0)
+                                {
+                                    @: đ/giờ
+                                }
+                                else
+                                {
+                                    @: đ/Tháng
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<div id="Fields">
-    <h4>Danh sách sân đặt</h4>
-    <table class="table">
+@* <div id="Fields">
+    <h4 style="margin: 10px">Danh sách sân đặt</h4>
+    <table class="table card">
         <thead>
             <tr>
                 <th>
@@ -105,7 +161,7 @@
             }
         </tbody>
     </table>
-</div>
+</div> *@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
