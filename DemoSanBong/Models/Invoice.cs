@@ -36,9 +36,9 @@ namespace DemoSanBong.Models
         public int VAT { get; set; }
         public string? Note { get; set; }
 
-        public static readonly int CheckedIn = 0;
-        public static readonly int CheckedOut = 1;
-        public static readonly int Paid = 2;
+        public static readonly int CheckedIn = 0; //đã nhận sân
+        public static readonly int CheckedOut = 1; //chưa thanh toán
+        public static readonly int Paid = 2;//đã thanh toán
 
     }
 }

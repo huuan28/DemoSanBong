@@ -23,21 +23,21 @@
         </div>
     }
 }
-@if (Model.Status == 1)
-{
-    <h3>Phiếu thuê sân [@Model.Id]</h3>
-}
-else if (Model.Status == 2)
-{
-    <h3>Hóa đơn thanh toán [@Model.Id]</h3>
-}
-
 @if (Model.Status == 0)
 {
+    <h3 style="margin-left:50px">Phiếu nhận sân</h3>
+    <a style="margin-left:50px;position:absolute;right:80px;top:121px;" class="btn btn-warning" asp-action="PrintCheckin" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
+}
+else
+{
+    <h3 style="margin-left:50px">Hóa đơn thanh toán</h3>
+    <a style="margin-left:50px;position:absolute;right:80px;top:121px;" class="btn btn-warning" asp-action="PrintCheckout" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
+}
 
+@if (Model.Status == 0 || Model.Status == 1)
+{
     <div>
-        <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id">Thanh toán</a>
-        @*  <a asp-action="Index">Quay lại danh sách Phiếu</a> *@
+        <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id" style="margin-left:50px">Thanh toán</a>
     </div>
 }
 <div id="invoices" class="container-fluid px-5 mt-4">
@@ -58,20 +58,20 @@ else if (Model.Status == 2)
                         <dt class="col-sm-5 font-weight-bold">SĐT</dt>
                         <dd class="col-sm-7">@Model.Booking.Customer.PhoneNumber</dd>
 
-                        <dt class="col-sm-5 font-weight-bold">Thời gian lập phiếu</dt>
+                        <dt class="col-sm-5 font-weight-bold">Ngày tạo phiếu</dt>
                         <dd class="col-sm-7">@Html.DisplayFor(model => model.CreateDate)</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-5 font-weight-bold">Thời gian nhận</dt>
+                        <dt class="col-sm-5 font-weight-bold">Ngày nhận sân</dt>
                         <dd class="col-sm-7">@Html.DisplayFor(model => model.CheckinDate)</dd>
 
-                        <dt class="col-sm-5 font-weight-bold">Thời gian trả</dt>
+                        <dt class="col-sm-5 font-weight-bold">Ngày trả sân</dt>
                         <dd class="col-sm-7">@Html.DisplayFor(model => model.CheckoutDate)</dd>
 
                         <dt class="col-sm-5 font-weight-bold">Trạng thái</dt>
-                        <dd class="col-sm-7">@Html.DisplayFor(model => model.Status)</dd>
+                        <dd class="col-sm-7">@Html.DisplayFor(model => model.State)</dd>
 
                         <dt class="col-sm-5 font-weight-bold">Mã đặt sân</dt>
                         <dd class="col-sm-7">@Html.DisplayFor(model => model.Booking.Id)</dd>
@@ -107,6 +107,8 @@ else if (Model.Status == 2)
                         <th>Tên sân</th>
                         <th>Loại sân</th>
                         <th>Giá đặt sân</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -126,6 +128,8 @@ else if (Model.Status == 2)
                                     @: đ/Tháng
                                 }
                             </td>
+                            <td>@Html.DisplayFor(modelItem => item.Start)</td>
+                            <td>@Html.DisplayFor(modelItem => item.End)</td>
                         </tr>
                     }
                 </tbody>
@@ -136,7 +140,7 @@ else if (Model.Status == 2)
 
 @if (Model.Status != 2)
 {
-    <button class="btn btn-success" id="btnOrder">Thêm dịch vụ</button>
+    <button class="btn btn-success" id="btnOrder" style="margin-left:50px">Thêm dịch vụ</button>
     <div id="SelectedService">
         @Html.Partial("_SelectedServices", Model.Order)
     </div>
@@ -162,14 +166,14 @@ else if (Model.Status == 2)
                     @foreach (var item in Model.Services)
                     {
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                            <td>@item.GetCurrPrice()</td>
-                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Service.Id)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Service.Name)</td> 
+                            <td>@Html.DisplayFor(modelItem => item.Service.Type)</td>
+                            <td>@item.Price</td>
+                            <td>@Html.DisplayFor(modelItem => item.Service.Quantity)</td>
                             <td class="text-center">
-                                <input type="number" name="qty" id="sv-@item.Id" class="form-control d-inline-block w-auto" min="1" value="1" />
-                                <button class="btn btn-success mt-2" data-svid="@item.Id" data-ivid="@Model.Id">Order</button>
+                                <input type="number" name="qty" id="sv-@item.Service.Id" class="form-control d-inline-block w-auto" min="1" value="1" />
+                                <button class="btn btn-success order-service" data-svid="@item.Service.Id" data-ivid="@Model.Id">Order</button>
                             </td>
                         </tr>
                     }

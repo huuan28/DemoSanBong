@@ -30,13 +30,16 @@ namespace DemoSanBong.Models
             currPrice= f.Price;
         }
         public double GetCurrPrice() { return currPrice; }
+
+
+
         public double getCurrentPrice(AppDbContext context) //Lấy giá giờ hiện tại
         {
             var f = context.ServiceRates.Where(i => i.ServiceId == Id && i.EffectiveDate < DateTime.Now).OrderByDescending(i => i.EffectiveDate).FirstOrDefault();
             if (f == null) return 0;
             return f.Price;
         }
-        public double getPrice(AppDbContext context, DateTime date) //Lấy giá giờ hiện tại
+        public double getPrice(AppDbContext context, DateTime date) //Lấy giá tại thời điểm
         {
             var f = context.ServiceRates.Where(i => i.ServiceId == Id && i.EffectiveDate < date).OrderByDescending(i => i.EffectiveDate).FirstOrDefault();
             if (f == null) return 0;

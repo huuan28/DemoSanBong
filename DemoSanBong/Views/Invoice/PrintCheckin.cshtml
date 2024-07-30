@@ -1,0 +1,104 @@
+﻿@model DemoSanBong.ViewModels.InvoiceViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Empty.cshtml";
+}
+
+<div class="container-fluid px-5 mt-4">
+    <div class="card shadow-sm border-primary">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0 text-center">Phiếu nhận sân</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead mb-4">Mã số: <span class="font-weight-bold text-primary">@Model.Id</span></p>
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4 font-weight-bold">Mã đặt sân</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Id)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Khách hàng</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Customer.FullName)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Số điện thoại</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Booking.Customer.PhoneNumber)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Ngày tạo</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CreateDate)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Thời gian nhận</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CheckinDate)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Thời gian trả</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.CheckoutDate)</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4 font-weight-bold">Đã đặt cọc</dt>
+                        <dd class="col-sm-8">@string.Format("{0:#,0} đ", Model.Booking.Deposit)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Nhân viên</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.Cashier.FullName)</dd>
+                        <dt class="col-sm-4 font-weight-bold">Ghi chú</dt>
+                        <dd class="col-sm-8">
+                           @Model.Note
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div id="Fields" class="container-fluid px-5 mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Sân sử dụng</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Tên sân</th>
+                        <th>Loại sân</th>
+                        <th>Giá sân</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        double allcost = 0;
+                    }
+                    @foreach (var item in Model.Fields)
+                    {
+                        allcost += (double)item.Cost;
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                            <td>
+                                @string.Format("{0:#,0}", item.Price)
+                                @if (Model.Booking.RentalType == 0)
+                                {
+                                    @: đ/giờ
+                                }
+                                else
+                                {
+                                    @: đ/Tháng
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.Start)</td>
+                            <td>@Html.DisplayFor(modelItem => item.End)</td>
+                            <td>@string.Format("{0:#,0}", item.Cost)</td>
+                        </tr>
+                    }
+                    <tr class="font-weight-bold">
+                        <th colspan="5" class="text-right">Tổng cộng</th>
+                        <th>@string.Format("{0:#,0}đ", allcost)</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    window.print();
+</script>

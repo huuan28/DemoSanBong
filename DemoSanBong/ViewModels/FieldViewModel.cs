@@ -19,6 +19,8 @@ namespace DemoSanBong.ViewModels
         [Display(Name = "Giá giờ")]
         public double Price { get; set; }
 
+        public double? Cost { get; set; }
+
         [Display(Name = "Giá tháng")]
         public double PricePerMonth { get; set; }
 

@@ -2,13 +2,13 @@
 
 @{
     ViewData["Title"] = "Checkout";
-    Layout = "~/Views/Shared/_Admin.cshtml";
+    Layout = "~/Views/Shared/_Empty.cshtml";
 }
 
 <div class="container-fluid px-5 mt-4">
     <div class="card shadow-sm border-primary">
         <div class="card-header bg-success text-white">
-            <h4 class="mb-0">Thông tin hóa đơn</h4>
+            <h4 class="mb-0 align-center">Hóa đơn thanh toán</h4>
         </div>
         <div class="card-body">
             <p class="lead mb-4">Mã số: <span class="font-weight-bold text-primary">@Model.Id</span></p>
@@ -40,36 +40,22 @@
                         <dd class="col-sm-8">@string.Format("{0:#,0} đ", Model.Final)</dd>
                         <dt class="col-sm-4 font-weight-bold">Hình thức thanh toán</dt>
                         <dd class="col-sm-8">
-                            <div class="form-check">
-                                <input type="radio" name="PaymentMethod" value="0" id="paymentCash" checked class="form-check-input">
-                                <label class="form-check-label" for="paymentCash">Tiền mặt</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" name="PaymentMethod" value="1" id="paymentVnPay" class="form-check-input">
-                                <label class="form-check-label" for="paymentVnPay">VnPay</label>
-                            </div>
-                            <div class="form-check">
-                                <input type="radio" name="PaymentMethod" value="2" id="paymentMomo" class="form-check-input">
-                                <label class="form-check-label" for="paymentMomo">Momo</label>
-                            </div>
+                            @Model.PaymentMethod
                         </dd>
                         <dt class="col-sm-4 font-weight-bold">Trạng thái hóa đơn</dt>
                         <dd class="col-sm-8">
-                            <span class="badge Trạng thái hóa đơn">@Model.Status</span>
+                            <span class="badge Trạng thái hóa đơn">@Model.State</span>
                         </dd>
                         <dt class="col-sm-4 font-weight-bold">Nhân viên</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.Cashier.FullName)</dd>
                         <dt class="col-sm-4 font-weight-bold">Ghi chú</dt>
                         <dd class="col-sm-8">
-                            <input name="Note" id="Note" placeholder="Nhập ghi chú..." class="form-control">
+                            @Model.Note
                         </dd>
                     </dl>
                 </div>
             </div>
-            <div class="mt-4">
-                <a class="btn btn-danger" asp-action="Details" asp-route-id="@Model.Id">Hủy</a>
-                <button type="button" id="submitCheckout" class="btn btn-primary">Xác nhận</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -96,7 +82,7 @@
                     }
                     @foreach (var item in Model.Fields)
                     {
-                        allcost +=(double) item.Cost;
+                        allcost += (double)item.Cost;
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.Type)</td>
@@ -167,31 +153,6 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#submitCheckout').on('click', function () {
-                console.log('error')
-                var id = '@Model.Id';
-                var note = $('#Note').val();
-                var paymentMethod = $('input[name="PaymentMethod"]:checked').val();
-
-                $.ajax({
-                    url: '@Url.Action("Checkout", "Invoice")',
-                    type: 'POST',
-                    data: {
-                        id: id,
-                        pm: paymentMethod,
-                        note: note
-                    },
-                    success: function (result) {
-                        window.location.href = result.redirectUrl;
-                    },
-                    error: function (error) {
-                        console.error('Error during checkout:', error);
-                    }
-                });
-            });
-        });
-    </script>
-
+<script>
+    window.print();
+</script>

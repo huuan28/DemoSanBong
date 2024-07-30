@@ -1,90 +1,53 @@
-﻿@model IEnumerable<DemoSanBong.Models.InvoiceService>
+﻿@model IEnumerable<DemoSanBong.ViewModels.InvoiceServiceView>
 @{
     double total = 0;
 }
-<h4>Dịch vụ sử dụng</h4>
-<div class="container-fluid px-5 mt-4">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Danh sách dịch vụ</h4>
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Mã dịch vụ</th>
-                        <th>Tên dịch vụ</th>
-                        <th>Loại dịch vụ</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Thành tiền</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        total += item.Quantity * item.Service.GetCurrPrice();
+@if (Model.ToList().Count > 0)
+{
+    <div class="container-fluid px-5 mt-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Dịch vụ đã sử dụng</h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Service.Id)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Service.Name)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Service.Type)</td>
-                            <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice())</td>
-                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
-                            <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice() * item.Quantity)</td>
-                            <td class="text-center">
-                                <button class="btn btn-danger btn-sm" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">-</button>
-                                <button class="btn btn-success btn-sm" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">+</button>
-                            </td>
+                            <th>Mã dịch vụ</th>
+                            <th>Tên dịch vụ</th>
+                            <th>Loại dịch vụ</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Thành tiền</th>
+                            <th></th>
                         </tr>
-                    }
-                    <tr class="font-weight-bold">
-                        <td colspan="5" class="text-right">Tổng cộng</td>
-                        <td>@string.Format("{0:#,0}đ", total)</td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            total += item.InvoiceService.Quantity * item.Price;
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.InvoiceService.Service.Id)</td>
+                                <td>@Html.DisplayFor(modelItem => item.InvoiceService.Service.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.InvoiceService.Service.Type)</td>
+                                <td>@string.Format("{0:#,0}đ", item.Price)</td>
+                                <td>@Html.DisplayFor(modelItem => item.InvoiceService.Quantity)</td>
+                                <td>@string.Format("{0:#,0}đ", item.Price * item.InvoiceService.Quantity)</td>
+                                <td class="text-center">
+                                    <button class="btn btn-danger decrease-service" data-svid="@item.InvoiceService.Service.Id" data-ivid="@item.InvoiceService.InvoiceId">-</button>
+                                    <button class="btn btn-success increase-service" data-svid="@item.InvoiceService.Service.Id" data-ivid="@item.InvoiceService.InvoiceId">+</button>
+                                </td>
+                            </tr>
+                        }
+                        <tr class="font-weight-bold">
+                            <td colspan="5" class="text-right">Tổng cộng</td>
+                            <td>@string.Format("{0:#,0}đ", total)</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>Mã dịch vụ</th>
-            <th>Tên dịch vụ</th>
-            <th>Loại dịch vụ</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Thành tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            total += item.Quantity * item.Service.GetCurrPrice();
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Service.Id)</td>
-                <td>@Html.DisplayFor(modelItem => item.Service.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Service.Type)</td>
-                <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice())
-                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
-                <td>@string.Format("{0:#,0}đ", item.Service.GetCurrPrice()*item.Quantity)</td>
-                <td>
-                    <button class="btn btn-danger decrease-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">-</button>
-                    <button class="btn btn-success increase-service" data-svid="@item.Service.Id" data-ivid="@item.InvoiceId">+</button>
-                </td>
-            </tr>
-        }
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <th>Tổng cộng</th>
-            <th>@string.Format("{0:#,0}đ", total)</th>
-
-        </tr>
-    </tbody>
-</table> *@
+}
