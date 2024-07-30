@@ -75,7 +75,7 @@ namespace DemoSanBong.Controllers
             currentBooking.AvailableField.Clear();
             foreach (var field in fields)
             {
-                if (IsAvailable(field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
+                if (IsAvailable(field.Id, (DateTime)currentBooking.CheckinDate, (DateTime)currentBooking.CheckoutDate))
                 {
                     currentBooking.AvailableField.Add(
                     new FieldViewModel
@@ -124,7 +124,7 @@ namespace DemoSanBong.Controllers
             // Lặp qua các mục và thêm các mục không hợp lệ vào danh sách tạm thời
             foreach (var field in currentBooking.SelectedFields.SelectedFields)
             {
-                if (!IsAvailable((int)field.Id, currentBooking.CheckinDate, currentBooking.CheckoutDate))
+                if (!IsAvailable((int)field.Id, (DateTime)currentBooking.CheckinDate, (DateTime)currentBooking.CheckoutDate))
                 {
                     fieldsToRemove.Add(field);
                 }

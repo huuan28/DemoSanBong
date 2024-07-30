@@ -58,7 +58,7 @@
                             @string.Format("{0:#,0} đ", Model.Deposit)
                         </dd>
                         <dt class="col-sm-6 font-weight-bold">
-                            @Html.DisplayNameFor(model => model.Status)
+                            Trạng thái
                         </dt>
                         <dd class="col-sm-6">
                             <span class="@Model.TextColor font-weight-bold">@Model.State</span>
@@ -70,7 +70,7 @@
                             @Html.DisplayFor(model => model.Customer.FullName)
                         </dd>
                         <dt class="col-sm-6 font-weight-bold">
-                            SĐT
+                            Số điện thoại
                         </dt>
                         <dd class="col-sm-6">
                             @Html.DisplayFor(model => model.Customer.PhoneNumber)
@@ -84,7 +84,7 @@
 <div id="Fields" class="container-fluid px-5 mt-4">
     <div class="card shadow-sm border-primary">
         <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Danh sách sân đặt</h5>
+            <h5 class="mb-0">Sân đã đặt</h5>
         </div>
         <div class="card-body">
             <table class="table table-striped table-bordered">
@@ -93,6 +93,8 @@
                         <th>Tên sân</th>
                         <th>Loại sân</th>
                         <th>Giá đặt sân</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -112,6 +114,8 @@
                                     @: đ/Tháng
                                 }
                             </td>
+                            <td>@item.Start</td>
+                            <td>@item.End</td>
                         </tr>
                     }
                 </tbody>
@@ -120,48 +124,6 @@
     </div>
 </div>
 
-@* <div id="Fields">
-    <h4 style="margin: 10px">Danh sách sân đặt</h4>
-    <table class="table card">
-        <thead>
-            <tr>
-                <th>
-                    Tên sân
-                </th>
-                <th>
-                    Loại sân
-                </th>
-                <th>
-                    Giá đặt sân
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.SelectedFields.SelectedFields)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                    <td>
-                        @string.Format("{0:#,0}", item.Price)
-                        @if (Model.RentalType == 0)
-                        {
-                            @: đ/giờ
-                        }
-                        else
-                        {
-                            @: đ/Tháng
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div> *@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

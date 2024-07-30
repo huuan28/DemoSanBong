@@ -4,6 +4,7 @@ using DemoSanBong.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
 
@@ -33,8 +34,8 @@ namespace DemoSanBong.Controllers
                 models.Add(new BookingViewModel
                 {
                     Id = (int)booking.Id,
-                    CheckinDate = (DateTime)booking.CheckinDate,
-                    CheckoutDate = (DateTime)booking.CheckoutDate,
+                    CheckinDate = booking.CheckinDate,
+                    CheckoutDate = booking.CheckoutDate,
                     Deposit = booking.Deposit,
                     Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
                     RentalType = booking.RentalType,
@@ -51,8 +52,8 @@ namespace DemoSanBong.Controllers
             var model = new BookingViewModel
             {
                 Id = (int)booking.Id,
-                CheckinDate = (DateTime)booking.CheckinDate,
-                CheckoutDate = (DateTime)booking.CheckoutDate,
+                CheckinDate = booking.CheckinDate,
+                CheckoutDate = booking.CheckoutDate,
                 Deposit = booking.Deposit,
                 Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
                 RentalType = booking.RentalType,
@@ -71,14 +72,11 @@ namespace DemoSanBong.Controllers
                     Id = field.Id,
                     Type = field.Type,
                     Name = field.Name,
-                };
-                model.SelectedFields.SelectedFields.Add(new FieldViewModel
-                {
-                    Id = field.Id,
-                    Type = field.Type,
-                    Name = field.Name,
+                    Start=item.StartTime,
+                    End=item.EndTime,
                     Price = (booking.RentalType == 0) ? field.GetPrice(_context, booking.CreateDate) : field.GetPricePerMonth(_context, booking.CreateDate)
-                });
+                };
+                model.SelectedFields.SelectedFields.Add(modelfield);
             }
             return View(model);
         }
@@ -94,8 +92,8 @@ namespace DemoSanBong.Controllers
             {
                 BookingId = booking.Id,
                 CreateDate = DateTime.Now,
-                CheckinDate = (DateTime)booking.CheckinDate,
-                CheckoutDate = booking.CheckoutDate,
+                CheckinDate = DateTime.Now,
+                CheckoutDate = null,
                 CashierId = cashier.Id,
                 VAT = 10
             };

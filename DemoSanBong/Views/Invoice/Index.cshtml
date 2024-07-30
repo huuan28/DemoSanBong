@@ -10,26 +10,58 @@
 <div class="container">
     <h1>Danh sách <span class="highlight">Đặt sân</span></h1>
 
-    <div class="invoice-grid">
-        @foreach (var item in Model)
-        {
-            <div class="invoice-card">
-                <div class="invoice-info">
-                    <h2>Mã đặt sân: @Html.DisplayFor(modelItem => item.Id)</h2>
-                    <p>Tên khách hàng: @Html.DisplayFor(modelItem => item.Customer.FullName)</p>
-                    <p>Số điện thoại: @Html.DisplayFor(modelItem => item.Customer.PhoneNumber)</p>
-                    <p>Hình thức thuê: @Html.DisplayFor(modelItem => item.Type)</p>
-                    <p>Bắt đầu: @Html.DisplayFor(modelItem => item.CheckinDate)</p>
-                    <p>Kết thúc: @Html.DisplayFor(modelItem => item.CheckoutDate)</p>
-                    <p>Đã đặt cọc: @Html.DisplayFor(modelItem => item.Deposit)</p>
-                    <p>
-                        Trạng thái: <span class="@item.TextColor">@item.State</span>
-                    </p>
-                    <div class="actions">                    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Mã đặt sân
+                </th>
+                <th>
+                    Tên khách hàng
+                </th>
+                <th>
+                    Số điện thoại
+                </th>
+                <th>
+                    Hình thức thuê
+                </th>
+                <th>
+                    Ngày đặt
+                </th>
+                <th>
+                    Trạng thái
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Customer.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Customer.PhoneNumber)                        
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        @item.State
+                    </td>
+                    <td>
                         <a class="btn btn-info" asp-action="Check" asp-route-id="@item.Id">Kiểm tra</a>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

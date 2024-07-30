@@ -14,11 +14,11 @@ namespace DemoSanBong.ViewModels
 
         public DateTime SelectedDate { get; set; }
 
-        [Display(Name = "Ngày nhận dự kiến")]
-        public DateTime CheckinDate { get; set; }
+        [Display(Name = "Ngày nhận")]
+        public DateTime? CheckinDate { get; set; }
 
-        [Display(Name = "Ngày trả dự kiến")]
-        public DateTime CheckoutDate { get; set; }
+        [Display(Name = "Ngày trả")]
+        public DateTime? CheckoutDate { get; set; }
 
         [Display(Name = "Tiền đặt cọc")]
         public double? Deposit { get; set; }
