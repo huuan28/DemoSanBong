@@ -7,5 +7,7 @@ namespace DemoSanBong.ViewModels
         public Field Field { get; set; }
         public string Status { get; set; }
         public string StatusColor { get; set; }
+        public Booking Booking { get; set; }
+        public Invoice Invoice { get; set; }
     }
 }

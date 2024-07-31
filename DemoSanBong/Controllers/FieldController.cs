@@ -3,6 +3,7 @@ using DemoSanBong.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol;
 
 
@@ -50,6 +51,7 @@ namespace DemoSanBong.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(FieldViewModel model, IFormFile image)
         {
             if (ModelState.IsValid)
@@ -100,7 +102,7 @@ namespace DemoSanBong.Controllers
                     Directory.CreateDirectory(fieldFolder);
                 }
                 //Lấy tên file
-                string fileName = Guid.NewGuid().ToString()+"-"+ image.FileName;
+                string fileName = Guid.NewGuid().ToString() + "-" + image.FileName;
 
                 //lấy đường dẫn folder ảnh
                 string filePath = Path.Combine(fieldFolder, fileName);
@@ -134,6 +136,7 @@ namespace DemoSanBong.Controllers
                 return NotFound();
             return View(field);
         }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -174,7 +177,7 @@ namespace DemoSanBong.Controllers
 
 
 
-        [Authorize(Roles ="Cashier")]
+        [Authorize(Roles = "Cashier")]
         public IActionResult Status()
         {
             var fields = _context.Fields.ToList();
@@ -183,9 +186,53 @@ namespace DemoSanBong.Controllers
             {
                 var model = new FieldView
                 {
-                    Field = field
+                    Field = field,
+                    Status = "Trống",
+                    StatusColor = "btn btn-success"
                 };
                 models.Add(model);
+            }
+            var now = DateTime.Now;
+            var begin = now.AddMinutes(-5);
+            var end = now.AddMinutes(0);
+            var bkdt = _context.BookingDetails.Where(i =>
+                    (i.StartTime <= begin && i.EndTime >= end) ||
+                    (i.StartTime <= begin && i.EndTime >= end) ||
+                    (i.StartTime >= begin && i.EndTime <= end)).Include(i => i.Booking).ToList();
+
+            var bks = bkdt.Where(i => i.Booking.Status ==1||i.Booking.Status==2).ToList();
+            foreach (var i in bks)
+            {
+                if (models.Any(x => x.Field.Id == i.FieldId))
+                {
+                    var f = models.FirstOrDefault(x => x.Field.Id == i.FieldId);
+                    f.Status = "Đã đặt";
+                    f.StatusColor = "btn btn-warning";
+                    f.Booking = i.Booking;
+                }
+            }
+
+            var ivs = _context.Invoices.Where(i => i.Status == 0).Include(i => i.Booking).ToList();
+            var bkdt2 = new List<BookingDetail>();
+            foreach (var i in ivs)
+            {
+                var dt = _context.BookingDetails.Where(x => x.BookingId == i.BookingId).Include(a => a.Booking).FirstOrDefault();
+                bkdt2.Add(dt);
+            }
+            var bkdt3 = bkdt2.Where(i =>
+                    (i.StartTime <= begin && i.EndTime >= end) ||
+                    (i.StartTime <= begin && i.EndTime >= end) ||
+                    (i.StartTime >= begin && i.EndTime <= end)).ToList();
+
+            foreach (var i in bkdt3)
+            {
+                if (models.Any(x => x.Field.Id == i.FieldId))
+                {
+                    var f = models.FirstOrDefault(x => x.Field.Id == i.FieldId);
+                    f.Status = "Đang đá";
+                    f.StatusColor = "btn btn-danger";
+                    f.Invoice = ivs.FirstOrDefault(a => a.BookingId == i.Booking.Id);
+                }
             }
             return View(models);
         }

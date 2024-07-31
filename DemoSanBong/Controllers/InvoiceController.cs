@@ -88,6 +88,7 @@ namespace DemoSanBong.Controllers
         #endregion
 
         #region Phiếu nhận sân
+
         [Authorize(Roles = "Cashier")]
         public async Task<IActionResult> Checkin(int id)
         {
@@ -131,7 +132,7 @@ namespace DemoSanBong.Controllers
         }
         #endregion
 
-        #region Session phiếu/hóa đơn
+        #region Session
              /////////Sesstion
         private async Task<InvoiceViewModel> GetInvoiceFromSession(int id)
         {
@@ -342,7 +343,6 @@ namespace DemoSanBong.Controllers
             var InvoiceJson = JsonConvert.SerializeObject(invoice);
             HttpContext.Session.SetString("CurrentInvoice", InvoiceJson);
         }
-             //Session////////
         [HttpPost]
         public async Task<IActionResult> AddService(int ivId, int svId, int qty)
         {
@@ -496,7 +496,7 @@ namespace DemoSanBong.Controllers
                     CreateDate = DateTime.Now,
                     Description = $"Thanh toan hoa don:{id}",
                     FullName = currentInvoice.Booking.Customer.FullName,
-                    BookingId = id
+                    BookingId = id,
                 };
                 redirectUrl = _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel, "");
             }
@@ -515,6 +515,7 @@ namespace DemoSanBong.Controllers
             else
             {
                 iv.Status = 2;
+                iv.Note = note;
                 _context.Invoices.Update(iv);
                 _context.SaveChanges();
                 HttpContext.Session.Remove("CurrentInvoice");
@@ -540,6 +541,7 @@ namespace DemoSanBong.Controllers
             iv.Status = 2;
             iv.CashierId = currentInvoice.Cashier.Id;
             iv.Amount = (double)currentInvoice.Amount;
+            iv.Note = currentInvoice.Note;
             _context.Invoices.Update(iv);
             _context.SaveChanges();
             //xóa session
@@ -568,6 +570,7 @@ namespace DemoSanBong.Controllers
             iv.Status = 2;
             iv.CashierId = currentInvoice.Cashier.Id;
             iv.Amount = (double)currentInvoice.Amount;
+            iv.Note = currentInvoice.Note;
             _context.Invoices.Update(iv);
             _context.SaveChanges();
             //xóa session session

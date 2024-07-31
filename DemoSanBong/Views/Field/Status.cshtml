@@ -39,31 +39,38 @@
     }
 </style>
 <h1 style="text-align:center">Tình trạng sân</h1>
-
+<a class="btn btn-primary" style="margin-top:20px;margin-left:50px" asp-action="Status">Refresh</a>
 <div class="container">
     <div class="row">
         @foreach (var item in Model)
         {
             <div class="col-4 col-md-3 col-lg-3 item-container" style="padding: 20px">
                 <div class="image-container card">
-                     <img class="img-fluid" src="~/Images/FieldImages/00000000-0000-0000-0000-000000000000-3th.jpg" alt="">
-                    <div class=" box btn btn-success" style="margin:5px;">
-                        Trong
-                    </div>
-                    <div class="text-center my-div" style="background: orangered">
-                        <h4>@Html.DisplayFor(modelItem => item.Field.Name)</h4>                       
+                    <img class="img-fluid" src="~/Images/FieldImages/00000000-0000-0000-0000-000000000000-3th.jpg" alt="">
+                    @if (item.Status == "Đã đặt")
+                    {
+                        <a class=" box @item.StatusColor" style="margin:5px;" asp-action="check" asp-controller="invoice" asp-route-id="@item.Booking?.Id">
+                            @item.Status
+                        </a>
+                    }
+                    else if (item.Status == "Trống")
+                    {
+                        <div class=" box @item.StatusColor" style="margin:5px;">
+                            @item.Status
+                        </div>
+                    }
+                    else
+                    {
+                        <a class=" box @item.StatusColor" style="margin:5px;" asp-action="details" asp-controller="invoice" asp-route-id="@item.Invoice?.Id">
+                            @item.Status
+                        </a>
+                    }
+                    <div class="text-center my-div" style="background: orange">
+                        <h4>@Html.DisplayFor(modelItem => item.Field.Name)</h4>
                     </div>
                 </div>
             </div>
 
-       @*      <div class="col-6 col-md-3 mb-4" style="border-top-left-radius: 15px; border-top-right-radius: 15px; ">
-                <div class="card text-center bg-success" style="border-radius: 15px;">
-                    <p style="padding-top: 10px">@Html.DisplayFor(modelItem => item.Field.Name)</p>                    
-                    <p>Trống</p>
-                    <br />
-                    <a asp-action="Details" asp-route-id="@item.Field.Id">Check</a>
-                </div>
-            </div> *@
         }
     </div>
 </div>
