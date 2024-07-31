@@ -238,15 +238,15 @@ namespace DemoSanBong.Migrations
                 columns: table => new
                 {
                     CusId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Stars = table.Column<int>(type: "int", nullable: false),
                     Commment = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsShow = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FeedBacks", x => x.CusId);
+                    table.PrimaryKey("PK_FeedBacks", x => new { x.CusId, x.CreateDate });
                     table.ForeignKey(
                         name: "FK_FeedBacks_Users_CusId",
                         column: x => x.CusId,

@@ -17,6 +17,9 @@ namespace DemoSanBong.ViewModels
         [Display(Name = "Ngày nhận")]
         public DateTime? CheckinDate { get; set; }
 
+        public DateTime? CreateDate { get; set; }
+
+
         [Display(Name = "Ngày trả")]
         public DateTime? CheckoutDate { get; set; }
 

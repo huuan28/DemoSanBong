@@ -39,6 +39,6 @@ namespace DemoSanBong.Models
         public static readonly int Cancelled = 3; //đã hủy
         public static readonly int CheckedIn = 4; //đã nhận
         public static readonly int CheckedOut = 4; //đã trả
-        public static readonly int TimeOut = 4; //quá hạn
+        public static readonly int TimeOut = 5; //quá hạn
     }
 }

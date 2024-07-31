@@ -51,7 +51,7 @@ namespace DemoSanBong.Models
             builder.Entity<FieldRate>().HasKey(i => new { i.FieldId, i.EffectiveDate });
             builder.Entity<ServiceRate>().HasKey(i => new { i.ServiceId, i.EffectiveDate });
             builder.Entity<FieldImage>().HasKey(i => new { i.FieldId, i.FileName });
-            builder.Entity<FeedBack>().HasKey(i => new { i.CusId });
+            builder.Entity<FeedBack>().HasKey(i => new { i.CusId, i.CreateDate });
 
             builder.Entity<AppUser>()
                 .HasOne(i => i.CustomerLevel)

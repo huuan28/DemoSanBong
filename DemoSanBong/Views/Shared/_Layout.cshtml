@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Hotelier - Hotel HTML Template</title>
+    <title>@ViewData["Title"]</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
@@ -238,7 +238,10 @@
                             }
                             else
                             {
-                                
+                                if (User.Identity.IsAuthenticated)
+                                {
+                                    <a asp-action="History" asp-controller="booking" class="nav-item nav-link">Lịch sử</a>
+                                }
                             <a asp-action="Booking" asp-controller="Booking" class="btn btn-success rounded-0 py-4 px-md-5 d-none d-lg-block">Đặt ngay!<i class="fa fa-arrow-right ms-3"></i></a>
                             }
                         </div>

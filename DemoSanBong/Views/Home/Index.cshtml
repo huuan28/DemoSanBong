@@ -46,13 +46,12 @@
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
-            <h1 class="mb-5">Explore Our <span class="text-primary text-uppercase">FeedBack</span></h1>
         </div>
         @if (User.IsInRole("Customer"))
         {
-            if (fb == null && flag)
+            if (flag)
             {
-                <button class="btn btn-warning" id="add">Feedback</button>
+                <button class="btn btn-warning" id="add">Đánh giá chất lượng sân</button>
                 <br />
                 <br />
             }
@@ -82,12 +81,12 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="pull-left">
-                                                <button type="button" id="cancel" class="btn btn-success btn-sm">Cancel</button>
+                                                <button type="button" id="Hủy" class="btn btn-success btn-sm">Cancel</button>
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="pull-right">
-                                                <input type="submit" value="Confirm" class="btn btn-warning btn-sm" />
+                                                <input type="submit" value="Đăng" class="btn btn-warning btn-sm" />
                                             </div>
                                         </div>
                                     </div>
@@ -98,7 +97,7 @@
                 </div>
             </form>
         }
-        <table class="table">
+@*         <table class="table">
             <thead>
                 <tr>
                     <th>
@@ -134,7 +133,7 @@
                         </td>
                         @if (user != null && item.CusId == user.Id)
                         {
-                            <td>
+@*                             <td>
                                 <button class="btn btn-info btn-sm" id="edit">Edit</button>
                             </td>
                         }
@@ -147,8 +146,86 @@
                     </tr>
                 }
             </tbody>
-        </table>
+        </table> *@
 
+        @foreach (var item in Model)
+        {
+            <div class="container mt-5" style="border:1px solid black; border-radius:5px;">
+                <div class="d-flex justify-content-center row">
+                    <div class="col-md-12">
+                        <div class="d-flex flex-column comment-section">
+                            <div class="bg-white p-2">
+                                <div class="d-flex flex-row user-info">
+                                    <img style="margin-right:15px" class="rounded-circle" src="https://i.imgur.com/xELPaag.jpg" width="80">
+                                    <div class="d-flex flex-column justify-content-start ml-2">
+                                        <b style="font-size:larger" class="text-dark d-block font-weight-bold name">@Html.DisplayFor(modelItem => item.Customer.FullName)</b><span class="date text-black-50">Ngày đăng: @item.CreateDate.ToString("dd/MM/yyyy")</span>
+                                      
+                                        <div>
+                                            @for (int i = 1; i <= item.Stars; i++)
+                                            {
+                                                <i class="fas fa-star star-yellow"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2" style="padding-left: 95px">
+                                    <p class="comment-text">@Html.DisplayFor(modelItem => item.Commment)</p>
+                                </div>
+                            </div>
+                            <div class="bg-white">
+                                <div class="d-flex flex-row fs-12">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a class="btn btn-danger btn-sm" asp-action="Hidefeedback" asp-route-id="@item.CusId">Ẩn</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <style>
+            body {
+                background: #eee
+            }
+
+            .date {
+                font-size: 22px
+            }
+
+            .comment-text {
+                font-size: 24px
+            }
+
+            .fs-12 {
+                font-size: 24px
+            }
+
+            .shadow-none {
+                box-shadow: none
+            }
+
+            .name {
+                color: #007bff
+            }
+
+            .cursor:hover {
+                color: blue
+            }
+
+            .cursor {
+                cursor: pointer
+            }
+
+            .textarea {
+                resize: none
+            }
+
+            .star-yellow {
+                color: gold;
+            }
+        </style>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
         <script>
             $(document).ready(function () {

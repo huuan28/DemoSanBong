@@ -1,20 +1,20 @@
-﻿@model IEnumerable<DemoSanBong.Models.Invoice>
+﻿@model IEnumerable<DemoSanBong.Models.Booking>
 
 @{
-    ViewData["Title"] = "InvoiceList";
-    Layout = "~/Views/Shared/_Admin.cshtml";
+    ViewData["Title"] = "History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Danh sách hóa đơn</h1>
+<h1 class="text-center">Lịch sử đặt sân</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Mã đơn
+                Mã đặt sân
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
+                Ngày đặt
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CheckinDate)
@@ -23,16 +23,10 @@
                 @Html.DisplayNameFor(model => model.CheckoutDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Amount)
+                @Html.DisplayNameFor(model => model.Deposit)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PaymentMethod)
-            </th>
-            <th>
-                Khách hàng
-            </th>
-            <th>
-                Nhân viên
+                @Html.DisplayNameFor(model => model.Status)
             </th>
             <th></th>
         </tr>
@@ -54,19 +48,26 @@
                     @Html.DisplayFor(modelItem => item.CheckoutDate)
                 </td>
                 <td>
-                    @string.Format("{0:#,0} đ",item.Amount)
+                    @Html.DisplayFor(modelItem => item.Deposit)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PaymentMethod)
+                    @{
+                        if (item.Status == 2 || item.Status == 1)
+                        {
+                            @:Chưa nhận
+                        }
+                        if (item.Status == 3)
+                        {
+                            @:Đã Hủy
+                        }
+                        if (item.Status == 4)
+                        {
+                            @:Đã nhận
+                        }
+                    }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Booking.Customer.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cashier.FullName)
-                </td>
-                <td>
-                    <a class="text-warning" asp-action="Details" asp-route-id="@item.Id">Chi tiết</a>
+                    <a class="btn btn-warning" asp-action="Details" asp-route-id="@item.Id">Xem chi tiết</a>
                 </td>
             </tr>
         }

@@ -43,29 +43,39 @@ namespace DemoSanBong.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var customer = await _userManager.GetUserAsync(HttpContext.User);
-                var feedbacks = _context.FeedBacks.FirstOrDefault(i => i.CusId == customer.Id);
-                if (feedbacks == null)
+                var feedback = new FeedBack
                 {
-                    feedbacks = new FeedBack
-                    {
-                        Stars = stars,
-                        Commment = comment,
-                        CusId = customer.Id,
-                        CreateDate = DateTime.Now,
-                        IsShow = true
-                    };
-                    _context.FeedBacks.Add(feedbacks);
-                }
-                feedbacks.Commment = comment;
-                feedbacks.Stars = stars;
-                feedbacks.UpdateDate = DateTime.Now;
+                    Stars = stars,
+                    Commment = comment,
+                    CusId = customer.Id,
+                    CreateDate = DateTime.Now,
+                    IsShow = true
+                };
+                _context.FeedBacks.Add(feedback);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> EditFeedBack(int cusId, DateTime date, int stars, string comment)
+        {
+            if (ModelState.IsValid)
+            {
+                var customer = await _userManager.GetUserAsync(HttpContext.User);
+                var feedback = _context.FeedBacks.FirstOrDefault(i => i.CusId == customer.Id && i.CreateDate == date);
+                feedback.Commment = comment;
+                feedback.Stars = stars;
+                feedback.UpdateDate = DateTime.Now;
+                _context.FeedBacks.Update(feedback);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult HideFeedBack(string id)
         {

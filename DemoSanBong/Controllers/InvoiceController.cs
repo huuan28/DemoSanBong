@@ -43,7 +43,8 @@ namespace DemoSanBong.Controllers
                     Deposit = booking.Deposit,
                     Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
                     RentalType = booking.RentalType,
-                    Status = booking.Status
+                    Status = booking.Status,
+                    CreateDate = booking.CreateDate
                 });
             }
             return View(models);
@@ -121,7 +122,7 @@ namespace DemoSanBong.Controllers
         }
         public IActionResult InvoiceList(int? status)
         {
-            var list = _context.Invoices.ToList();
+            var list = _context.Invoices.Include(i=>i.Booking).ThenInclude(i=>i.Customer).Include(i=>i.Cashier).ToList();
             if (status != null)
             {
                 list = list.FindAll(i => i.Status == status);
@@ -131,7 +132,7 @@ namespace DemoSanBong.Controllers
         #endregion
 
         #region Session phiếu/hóa đơn
-        /////////Sesstion
+             /////////Sesstion
         private async Task<InvoiceViewModel> GetInvoiceFromSession(int id)
         {
             var InvoiceJson = HttpContext.Session.GetString("CurrentInvoice");
@@ -341,7 +342,7 @@ namespace DemoSanBong.Controllers
             var InvoiceJson = JsonConvert.SerializeObject(invoice);
             HttpContext.Session.SetString("CurrentInvoice", InvoiceJson);
         }
-        //Session////////
+             //Session////////
         [HttpPost]
         public async Task<IActionResult> AddService(int ivId, int svId, int qty)
         {

@@ -2,20 +2,35 @@
 
 @{
     ViewData["Title"] = "Check";
-    Layout = "~/Views/Shared/_Admin.cshtml";
+    Layout = "~/Views/Shared/_layout.cshtml";
+    string masage = ViewBag.Message;
 }
 <style>
-    .card {
+    .card1 {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         border: 1px solid #ddd;
     }
 </style>
-@if (Model.Status == 1 || Model.Status == 2)
+
+@if (!string.IsNullOrEmpty(masage))
 {
-    <a onclick="confirm('Xác nhận lập phiếu')" style="margin-left:50px" class="btn btn-success" asp-action="Checkin" asp-controller="Invoice" asp-route-id="@Model.Id">Lập phiếu nhận sân</a>
+    if (masage == "Hủy thành công")
+    {
+        <div id="statusAlert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div id="statusAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
 }
-<div class="container-fluid px-5 mt-4">
-    <div class="card shadow-sm border-primary">
+<div class="container-fluid px-5 mt-4" style="width:100%">
+    <div class="card1 shadow-sm border-primary">
         <div class="card-header bg-success text-white">
             <h5 class="mb-0">Thông tin đặt sân</h5>
         </div>
@@ -63,18 +78,6 @@
                         <dd class="col-sm-6">
                             <span class="@Model.TextColor font-weight-bold">@Model.State</span>
                         </dd>
-                        <dt class="col-sm-6 font-weight-bold">
-                            Tên khách hàng
-                        </dt>
-                        <dd class="col-sm-6">
-                            @Html.DisplayFor(model => model.Customer.FullName)
-                        </dd>
-                        <dt class="col-sm-6 font-weight-bold">
-                            Số điện thoại
-                        </dt>
-                        <dd class="col-sm-6">
-                            @Html.DisplayFor(model => model.Customer.PhoneNumber)
-                        </dd>
                     </dl>
                 </div>
             </div>
@@ -82,7 +85,7 @@
     </div>
 </div>
 <div id="Fields" class="container-fluid px-5 mt-4">
-    <div class="card shadow-sm border-primary">
+    <div class="card1 shadow-sm border-primary">
         <div class="card-header bg-success text-white">
             <h5 class="mb-0">Sân đã đặt</h5>
         </div>
@@ -123,8 +126,22 @@
         </div>
     </div>
 </div>
+@if (Model.Status == 1 || Model.Status == 2)
+{
+    <a style="margin-left:500px;margin-top:20px;margin-bottom:20px" class="btn btn-danger" asp-action="Cancel" asp-controller="booking" asp-route-id="@Model.Id">Hủy đặt sân!</a>
+}
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        setTimeout(function () {
+            var alertElement = document.getElementById('statusAlert');
+            if (alertElement) {
+                alertElement.classList.remove('show');
+                alertElement.classList.add('fade');
+                setTimeout(() => {
+                    alertElement.remove();
+                }, 150);
+            }
+        }, 5000);
+    });
+</script>

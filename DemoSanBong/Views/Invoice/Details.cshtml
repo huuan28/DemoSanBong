@@ -26,18 +26,18 @@
 @if (Model.Status == 0)
 {
     <h3 style="margin-left:50px">Phiếu nhận sân</h3>
-    <a style="margin-left:50px;position:absolute;right:80px;top:121px;" class="btn btn-warning" asp-action="PrintCheckin" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
+    <a style="margin-left:50px;position:fixed;right:80px;top:121px;z-index:9999" class="btn btn-warning" asp-action="PrintCheckin" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
 }
 else
 {
     <h3 style="margin-left:50px">Hóa đơn thanh toán</h3>
-    <a style="margin-left:50px;position:absolute;right:80px;top:121px;" class="btn btn-warning" asp-action="PrintCheckout" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
+    <a style="margin-left:50px;position:fixed;right:80px;top:121px;z-index:9999" class="btn btn-warning" asp-action="PrintCheckout" asp-route-id="@Model.Id" target="_blank">In phiếu</a>
 }
 
 @if (Model.Status == 0 || Model.Status == 1)
 {
     <div>
-        <a class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id" style="margin-left:50px">Thanh toán</a>
+        <a onclick="confirm('Xác nhận trả sân và thanh toán')" class="btn btn-success" asp-action="Checkout" asp-route-id="@Model?.Id" style="margin-left:50px">Thanh toán</a>
     </div>
 }
 <div id="invoices" class="container-fluid px-5 mt-4">
@@ -183,56 +183,6 @@ else
     </div>
 </div>
 
-@* <div id="Services" style="display:none">
-    <h4>Order</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Mã dịch vụ
-                </th>
-                <th>
-                    Tên dịch vụ
-                </th>
-                <th>
-                    Loại dịch vụ
-                </th>
-                <th>
-                    Giá
-                </th>
-                <th>
-                    Hiện có
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Services)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Id)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Type)
-                    </td>
-                    <td>
-                        @item.GetCurrPrice()
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Quantity)
-                    </td>
-                    <td>
-                        <input type="number" name="qty" id="sv-@item.Id" min="1" value="1" />
-                        <button class="btn btn-success order-service" data-svid="@item.Id" data-ivid="@Model.Id">Order</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div> *@
 
 
 @section Scripts {

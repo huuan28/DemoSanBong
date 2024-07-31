@@ -1,12 +1,14 @@
 ﻿using DemoSanBong.Models;
 using DemoSanBong.Services;
 using DemoSanBong.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace DemoSanBong.Controllers
@@ -216,7 +218,7 @@ namespace DemoSanBong.Controllers
             else
             {
                 int dif = CalculateMonthsDifference((DateTime)f.Start, (DateTime)f.End);
-                currentBooking.SelectedFields.Amount -= f.PricePerMonth *dif;
+                currentBooking.SelectedFields.Amount -= f.PricePerMonth * dif;
             }
             currentBooking.SelectedFields.Deposit = currentBooking.SelectedFields.Amount * 0.2;
             currentBooking.Deposit = currentBooking.SelectedFields.Amount * 0.2;
@@ -391,14 +393,17 @@ namespace DemoSanBong.Controllers
                 currentBooking.RentalType = model.RentalType;
 
                 SaveBookingToSession(currentBooking);
-                var vnPayModel = new VnPaymentRequestModel()
-                {
-                    Amount = (double)currentBooking.Deposit,
-                    CreateDate = DateTime.Now,
-                    Description = $"{model.PhoneNumber}-{model.FullName}",
-                    FullName = model.FullName,
-                    BookingId = _context.Bookings.Max(i => i.Id)
-                };
+                var vnPayModel = new VnPaymentRequestModel();
+                vnPayModel.Amount = (double)currentBooking.Deposit;
+                vnPayModel.CreateDate = DateTime.Now;
+                vnPayModel.Description = $"{model.PhoneNumber}-{model.FullName}";
+                vnPayModel.FullName = model.FullName;
+                var bookings = _context.Bookings.FirstOrDefault();
+                if (bookings != null)
+
+                    vnPayModel.BookingId = _context.Bookings.Max(i => i.Id) + 1;
+                else
+                    vnPayModel.BookingId = 1;
                 return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel, "-"));
             }
             return RedirectToAction("Booking");
@@ -501,6 +506,63 @@ namespace DemoSanBong.Controllers
             }
 
             return totalMonths;
+        }
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> History()
+        {
+            var user = await GetCurrentUserAsync();
+            var list = _context.Bookings.Where(i => i.CusID == user.Id).Include(i => i.Customer).ToList();
+            return View(list);
+        }
+        public IActionResult Details(int id, string? message)
+        {
+            var booking = _context.Bookings.FirstOrDefault(i => i.Id == id);
+            if (booking == null) return NotFound();
+            var model = new BookingViewModel
+            {
+                Id = (int)booking.Id,
+                CheckinDate = booking.CheckinDate,
+                CheckoutDate = booking.CheckoutDate,
+                Deposit = booking.Deposit,
+                Customer = _context.Users.FirstOrDefault(i => i.Id == booking.CusID),
+                RentalType = booking.RentalType,
+                Status = booking.Status
+            };
+            var fields = _context.BookingDetails.Where(i => i.BookingId == id).ToList();
+            model.SelectedFields = new SelectedFieldsViewModel
+            {
+                SelectedFields = new List<FieldViewModel>()
+            };
+            foreach (var item in fields)
+            {
+                var field = _context.Fields.FirstOrDefault(i => i.Id == item.FieldId);
+                var modelfield = new FieldViewModel
+                {
+                    Id = field.Id,
+                    Type = field.Type,
+                    Name = field.Name,
+                    Start = item.StartTime,
+                    End = item.EndTime,
+                    Price = (booking.RentalType == 0) ? field.GetPrice(_context, booking.CreateDate) : field.GetPricePerMonth(_context, booking.CreateDate)
+                };
+                model.SelectedFields.SelectedFields.Add(modelfield);
+            }
+            ViewBag.Message = message;
+            return View(model);
+        }
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            var user = await GetCurrentUserAsync();
+            var bk = _context.Bookings.Find(id);
+            if (bk != null && bk.CusID == user.Id && (bk.Status == 1 || bk.Status == 2 ))
+            {
+                bk.Status = 3;
+                _context.Bookings.Update(bk);
+                _context.SaveChanges();
+                return RedirectToAction("Details", new { id = id, message = "Hủy thành công!" });
+            }
+            return RedirectToAction("Details", new { id = id, message = "Không thể hủy!" });
         }
     }
 }

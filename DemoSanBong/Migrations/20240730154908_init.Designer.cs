@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoSanBong.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240728054420_init")]
+    [Migration("20240730154908_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -225,12 +225,12 @@ namespace DemoSanBong.Migrations
                     b.Property<string>("CusId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Commment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
@@ -241,7 +241,7 @@ namespace DemoSanBong.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("CusId");
+                    b.HasKey("CusId", "CreateDate");
 
                     b.ToTable("FeedBacks");
                 });

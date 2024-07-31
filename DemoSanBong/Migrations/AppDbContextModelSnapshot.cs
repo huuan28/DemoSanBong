@@ -223,12 +223,12 @@ namespace DemoSanBong.Migrations
                     b.Property<string>("CusId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Commment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsShow")
                         .HasColumnType("bit");
@@ -239,7 +239,7 @@ namespace DemoSanBong.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("CusId");
+                    b.HasKey("CusId", "CreateDate");
 
                     b.ToTable("FeedBacks");
                 });
