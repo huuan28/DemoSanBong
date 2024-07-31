@@ -341,24 +341,24 @@
                 </ul>
             </li><!-- End hóa đơn Nav -->
 
-            <li class="nav-item">
+@*             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
                     <i class="bi bi-bar-chart"></i><span>Thống kê</span><i class="bi bi-chevron-down ms-auto"></i>
                 </a>
                 <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="charts-chartjs.html">
-                            <i class="bi bi-circle"></i><span>Doanh thu ngày</span>
-                        </a>
-                    </li>
                     <li>
                         <a href="charts-apexcharts.html">
                             <i class="bi bi-circle"></i><span>Doanh thu tháng</span>
                         </a>
                     </li>
                 </ul>
-            </li><!-- End thống kê Nav -->
-
+            </li><!-- End thống kê Nav --> *@
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-action="index" asp-controller="Statistics">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Thống kê</span>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
                     <i class="bi bi-gem"></i><span>Quản lý người dùng</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -379,6 +379,7 @@
 
             <li class="nav-heading"></li>
 
+            <!-- End Login Page Nav -->
            @*  <li class="nav-item">
                 <a class="nav-link collapsed" href="users-profile.html">
                     <i class="bi bi-person"></i>

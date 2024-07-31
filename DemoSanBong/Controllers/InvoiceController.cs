@@ -516,6 +516,7 @@ namespace DemoSanBong.Controllers
             {
                 iv.Status = 2;
                 iv.Note = note;
+                iv.CheckoutDate = DateTime.Now;
                 _context.Invoices.Update(iv);
                 _context.SaveChanges();
                 HttpContext.Session.Remove("CurrentInvoice");

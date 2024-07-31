@@ -5,8 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     double amount = 0;
     double deposit = 0;
+    string masage = ViewBag.Message;
 }
-
+@if (!string.IsNullOrEmpty(masage))
+{
+    if (masage == "Thanh toán thành công")
+    {
+        <div id="statusAlert" class="alert alert-success alert-dismissible fade show" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    else
+    {
+        <div id="statusAlert" class="alert alert-warning alert-dismissible fade show" role="alert">
+            @masage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}
 <hr />
 
 </div>
@@ -228,6 +245,20 @@
             registerRentalTypeChange();
             registerMonthChange();
 
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            setTimeout(function () {
+                var alertElement = document.getElementById('statusAlert');
+                if (alertElement) {
+                    alertElement.classList.remove('show');
+                    alertElement.classList.add('fade');
+                    setTimeout(() => {
+                        alertElement.remove();
+                    }, 150);
+                }
+            }, 5000);
         });
     </script>
 }

@@ -43,22 +43,6 @@ namespace DemoSanBong.Controllers
         //kiểm tra sân trống
         private bool IsAvailable(int fieldId, DateTime startDate, DateTime endDate)
         {
-            ////tìm lịch đặt sân có cùng thời gian chọn
-            //var bookings = _context.Bookings
-            //    .Where(i =>
-            //        (i.CheckinDate <= startDate && i.CheckoutDate >= startDate) ||
-            //        (i.CheckinDate <= endDate && i.CheckoutDate >= endDate) ||
-            //        (i.CheckinDate >= startDate && i.CheckoutDate <= endDate))
-            //    .ToList();
-
-            ////Duyệt qua các sân có trong danh sách lịch đặt vừa tìm để lọc ra những sân đã đặt
-            //foreach (var booking in bookings)
-            //{
-            //    bool flag = _context.BookingDetails.Any(i => i.FieldId == roomId && i.BookingId == booking.Id);
-            //    if (flag)
-            //        return false;
-            //}
-
             var bkdts = _context.BookingDetails.Where(i =>
                      (i.StartTime <= startDate && i.EndTime >= startDate) ||
                      (i.StartTime <= endDate && i.EndTime >= endDate) ||
@@ -363,7 +347,7 @@ namespace DemoSanBong.Controllers
             }
 
             //UpDateAvailbleField();
-
+            //ViewBag.Message = message;
             SaveBookingToSession(currentBooking);
             return View(currentBooking);
         }
@@ -373,6 +357,25 @@ namespace DemoSanBong.Controllers
         {
             if (ModelState.IsValid)
             {
+                currentBooking = GetBookingFromSession();
+                currentBooking.FullName = model.FullName;
+                currentBooking.PhoneNumber = model.PhoneNumber;
+                currentBooking.RentalType = model.RentalType;
+                SaveBookingToSession(currentBooking);
+                if (model.CheckoutDate <= model.CheckinDate)
+                {
+                    currentBooking.SelectedFields.Amount = 0;
+                    currentBooking.SelectedFields.Deposit = 0;
+                    currentBooking.SelectedFields.SelectedFields.Clear();
+                    SaveBookingToSession(currentBooking);
+                    ViewBag.Message = "Giờ đặt sân không hợp lệ!";
+                    return View(currentBooking);
+                }
+                if (currentBooking.SelectedFields.SelectedFields.Count == 0)
+                {
+                    ViewBag.Message = "Chưa chọn sân!";
+                    return View(currentBooking);
+                }
                 var user = _context.Users.FirstOrDefault(i => i.PhoneNumber == model.PhoneNumber);
                 //Kiểm tra đã đăng ký chưa
                 if (user == null)
@@ -382,15 +385,34 @@ namespace DemoSanBong.Controllers
                 }
                 else if (user.FullName != model.FullName && user.IsRegisted)
                 {
-                    ViewBag.Error = "SĐT này đã sử dụng với tên khác, hãy đăng nhập để cập nhật họ và tên!";
-                    return View(model);
+                    ViewBag.Message = "SĐT này đã sử dụng với tên khác, hãy đăng nhập để cập nhật họ và tên!";
+                    return View(currentBooking);
                 }
                 var rules = _context.Parameters.FirstOrDefault();
 
-                currentBooking = GetBookingFromSession();
-                currentBooking.FullName = model.FullName;
-                currentBooking.PhoneNumber = model.PhoneNumber;
-                currentBooking.RentalType = model.RentalType;
+                
+
+                //Kiểm tra lại sân trống
+                var removefield = new List<FieldViewModel>();
+                foreach (var i in currentBooking.SelectedFields.SelectedFields)
+                {
+                    if (!IsAvailable((int)i.Id, i.Start.Value, i.End.Value))
+                    {
+                        removefield.Add(i);                        
+                    }
+                }
+                if (removefield.Count > 0)
+                {
+                    foreach (var i in removefield)
+                    {
+                        currentBooking.SelectedFields.SelectedFields.Remove(i);
+                        currentBooking.SelectedFields.Amount -= i.Price * (i.End.Value.Hour - i.Start.Value.Hour);
+                        currentBooking.SelectedFields.Deposit -= 0.2*i.Price * (i.End.Value.Hour - i.Start.Value.Hour);
+                    }
+                    SaveBookingToSession(currentBooking);
+                    ViewBag.Message = $"Đã xảy ra lỗi, vui lòng chọn sân khác";
+                    return View(currentBooking);
+                }
 
                 SaveBookingToSession(currentBooking);
                 var vnPayModel = new VnPaymentRequestModel();
@@ -434,7 +456,7 @@ namespace DemoSanBong.Controllers
             return false;
         }
 
-        //kết quả trả về của VNPAY
+        //kết quả trả về từ VNPAY
         public async Task<IActionResult> PaymentCallBack()
         {
             // Lấy thông tin từ query string của VnPay để xác thực và cập nhật trạng thái đơn hàng
